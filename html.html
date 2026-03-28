@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Master List | Studio OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-dim": "#4d545a",
+              "inverse-primary": "#ffffff",
+              "secondary": "#56606e",
+              "on-primary-fixed-variant": "#5b5b5b",
+              "secondary-container": "#d9e3f4",
+              "error-dim": "#4f0116",
+              "error-container": "#ff8b9a",
+              "outline-variant": "#abb3b7",
+              "primary-container": "#e2e2e2",
+              "surface-tint": "#5e5e5e",
+              "on-primary": "#f8f8f8",
+              "tertiary-fixed": "#edf4fc",
+              "surface-variant": "#dbe4e7",
+              "on-secondary-container": "#485260",
+              "on-primary-fixed": "#3f3f3f",
+              "tertiary-container": "#edf4fc",
+              "on-tertiary-fixed-variant": "#60676e",
+              "secondary-dim": "#4a5462",
+              "primary-dim": "#525252",
+              "on-surface": "#2b3437",
+              "surface-bright": "#f8f9fa",
+              "tertiary-fixed-dim": "#dfe6ee",
+              "secondary-fixed": "#d9e3f4",
+              "on-tertiary": "#f5f9ff",
+              "inverse-on-surface": "#9b9d9e",
+              "outline": "#737c7f",
+              "on-primary-container": "#525252",
+              "secondary-fixed-dim": "#cbd5e6",
+              "on-surface-variant": "#586064",
+              "on-secondary-fixed-variant": "#525c6a",
+              "surface-dim": "#d1dce0",
+              "on-error-container": "#782232",
+              "on-error": "#fff7f7",
+              "on-background": "#2b3437",
+              "on-secondary": "#f7f9ff",
+              "background": "#f8f9fa",
+              "inverse-surface": "#0c0f10",
+              "surface": "#f8f9fa",
+              "on-secondary-fixed": "#36404d",
+              "surface-container-high": "#e2e9ec",
+              "on-tertiary-fixed": "#434a51",
+              "primary": "#5e5e5e",
+              "primary-fixed-dim": "#d4d4d4",
+              "surface-container": "#eaeff1",
+              "tertiary": "#596067",
+              "error": "#9e3f4e",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-highest": "#dbe4e7",
+              "primary-fixed": "#e2e2e2",
+              "on-tertiary-container": "#555d63",
+              "surface-container-low": "#f1f4f6"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+    </style>
+</head>
+<body class="text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full z-40 bg-white dark:bg-zinc-950 font-['Inter'] font-medium tracking-tight h-screen border-r border-zinc-200/50 dark:border-zinc-800/50 w-64">
+<div class="p-8">
+<div class="text-xl font-bold tracking-tighter text-black dark:text-white mb-12">Project Manager</div>
+<nav class="space-y-2">
+<a class="flex items-center gap-3 px-4 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-black dark:text-white border-l-2 border-black dark:border-white bg-zinc-50 dark:bg-zinc-900 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span>Projects</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Clients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<div class="absolute bottom-0 w-full p-8 border-t border-zinc-100 dark:border-zinc-900">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-zinc-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChzPCZy9BdECS1BOV1yOk2Mid4UwQQANTJrHR1tmNqX1uZ-9ndkv6riC4i84mGtts2K_BKeB-dUpVq5nFk_-GE0g1g_5bxzoqUknOmffLAb21Yv_Lf9XCza7B7O4FVA54uZ1m16aL0BVhkCKy9cvlOrzwSy_eFkIgatVgZWpQJLWu_OKcNCjsVwdBM6KuMZ3mWqb6VX24SCjxkaY3-MLadj_jNLDrR6gexPUlahsVtyYznpcKymCtj_hTIBuIyN0VirSOEsk_S8hRz"/>
+</div>
+<div>
+<div class="text-sm font-bold text-black dark:text-white">Lead Architect</div>
+<div class="text-xs text-zinc-400">Project Manager</div>
+</div>
+</div>
+<button class="w-full py-3 bg-black text-white text-sm font-bold tracking-tight hover:bg-zinc-800 transition-colors">
+                New Project
+            </button>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center w-full px-8 h-16 ml-64 fixed top-0 z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+<div class="flex items-center gap-8">
+<span class="text-lg font-black text-black dark:text-white">Studio OS</span>
+<nav class="hidden md:flex gap-6 font-['Inter'] text-sm font-bold uppercase tracking-widest">
+<a class="text-black dark:text-white border-b-2 border-black dark:border-white pb-4" href="#">Overview</a>
+<a class="text-zinc-400 dark:text-zinc-500 pb-4 hover:text-black dark:hover:text-white transition-all" href="#">Timeline</a>
+<a class="text-zinc-400 dark:text-zinc-500 pb-4 hover:text-black dark:hover:text-white transition-all" href="#">Resources</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-zinc-400">
+<span class="material-symbols-outlined text-xl cursor-pointer hover:text-black transition-colors" data-icon="search">search</span>
+<span class="material-symbols-outlined text-xl cursor-pointer hover:text-black transition-colors" data-icon="notifications">notifications</span>
+</div>
+<div class="h-4 w-px bg-zinc-200 mx-2"></div>
+<span class="font-['Inter'] text-xs font-bold uppercase tracking-widest text-zinc-500">Role: Architect</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 p-12 min-h-screen bg-surface">
+<!-- Header Section -->
+<div class="mb-16 flex justify-between items-end">
+<div>
+<h1 class="text-5xl font-extrabold tracking-tighter text-black mb-4">Project Master List</h1>
+<p class="text-on-surface-variant font-medium max-w-lg">Central hub for tracking architectural lifecycle, team allocation, and milestone delivery across active portfolios.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 bg-white border border-zinc-200 text-black text-xs font-bold uppercase tracking-widest hover:bg-zinc-50 transition-colors">
+                    Export CSV
+                </button>
+<button class="px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">
+                    Add New Project
+                </button>
+</div>
+</div>
+<!-- Project Table Container -->
+<div class="bg-surface-container-lowest overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Project Name</th>
+<th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Assigned Team</th>
+<th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Progress</th>
+<th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Status</th>
+<th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-zinc-100">
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-bright transition-colors">
+<td class="px-8 py-6">
+<div class="flex flex-col">
+<span class="font-bold text-black text-base tracking-tight">The Obsidian Pavilion</span>
+<span class="text-xs text-on-surface-variant">Residential • Tokyo, JP</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAO9PFk83zokqpXuH_Hj4XJ8ftXihkHS9lLQ2LdZ7goACC2K08swXAsioqUp9Qly6X986clLrq1rk1wbwYcwWFv67NOBSf9CdRK5gAiGEAgj6H_EDxNsHNxzne37_wvyh65h--EbODWVMXCrhJ6btLFNuZLamFtGe59aumKJszQBBx7EEhT19vaTDiY6fD5NCGoSZ-JpXenOR9ErOhgQ5d6EH82N7IgR0N67SKr98K4QikmaE1zJ1GoaLensmBFbENq2ceh7xU3ADK1"/>
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEkvj2W5A2xq71T0brHmqr3v2H1W-l3-5X4z9QPhBpcBnIQPi_fr_O3wPPYAnNQFfw77D-irBXz9D26rYPbMESJVed8t-5NpfC8cKXJTdIEJk_Z_bdpwfyEqRJ4Zxv4UkkpqNpY-4ssXjlsExrDySHKL3o8yiNYoQvX0vEYzr6IXLLTqjz4ybT7LdDN8UrQfLJzTmPrLS3TX2agfUv7gDIm2RODasX6KtJxvlT45XetwwKMg6A6_TLeQXUkRDUIrbK2dFlJDOcMzVa"/>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-zinc-100 flex items-center justify-center text-[10px] font-bold">+2</div>
+</div>
+</td>
+<td class="px-8 py-6 w-64">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+<span>85%</span>
+<span>Phase 04</span>
+</div>
+<div class="h-1 w-full bg-zinc-100 overflow-hidden">
+<div class="h-full bg-black w-[85%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-2.5 py-1 text-[10px] font-black uppercase tracking-widest bg-zinc-900 text-white">In Progress</span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-4 text-zinc-400">
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-lg" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-bright transition-colors">
+<td class="px-8 py-6">
+<div class="flex flex-col">
+<span class="font-bold text-black text-base tracking-tight">Vortex Cultural Center</span>
+<span class="text-xs text-on-surface-variant">Public • Berlin, DE</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW9uWQbGKCY7hhp3hCtgeMCg1VhIW9tIp67Ewiqup0E0zCIO3N-zOscxIEc3WxmElJpcV_52uvlEATq_RIEZ2mM3_-G5dNt2vst0DKoHK6Z1LmgBzJSooi0JKx-9JDTTYVFL6Z3GcEwiNKQ9WeV_y6z0Saj0Y0b_ZSdprtaRGoZFx2SyJkDzPEcToMMx0e9XjDVFkm7OOghfZFrkK9GqmInuwttDfQVr11-w983MXGjo2_htJaQTA83oIro4kHYLDbTn4X2mkDm2ml"/>
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApyM9mYPwvp4N7FgQnyTw_afjqUW2fFjfb7DItZBOlliOYu4kpFuwO_Tw-kHWiPA5q9Ey2Ivq2-zmmK4IFeADdj5bVl5wlPXrjqVAAcikqwRpmVs69oS_0iDI9urQ2m0Rg9bKurNz_KwLZObyKPvpCA5pmW-J1msY_Mzdo8LPGIqyzjRZx68qMqBqeOezQfIj_bSw13nHokULwj9kap3sB4y-HOlL52XgcrpWvcqtryq6BTcrOYZDP0LCJnZwJWzNsbckgxJJvIveL"/>
+</div>
+</td>
+<td class="px-8 py-6 w-64">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+<span>100%</span>
+<span>Archive</span>
+</div>
+<div class="h-1 w-full bg-zinc-100 overflow-hidden">
+<div class="h-full bg-zinc-400 w-full"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-2.5 py-1 text-[10px] font-black uppercase tracking-widest bg-zinc-200 text-zinc-600">Completed</span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-4 text-zinc-400">
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-lg" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-bright transition-colors">
+<td class="px-8 py-6">
+<div class="flex flex-col">
+<span class="font-bold text-black text-base tracking-tight">Monolith Lofts</span>
+<span class="text-xs text-on-surface-variant">Commercial • NYC, USA</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA79dHBtfZjkDSTzlMZ7IEwpXXnOAZCfEc0fIqcBI28-Ioo5Ziz44qcOxYWwRpwPqXUJlE3fwYPKGZABtyGgch0QPGwRyzyn0sYjbhew23TlOgCY_0HP-y5W_oM2i0gPLgCjiEBpc5rewF06sChE7hmS06glRshZyi-ACuixgHd0MjwmhQi6V4r01ZN8py-UUuYya1fZt8bIKmt7PYM1UL9QKdNE0EkATGx66F0-0y2HcMLx5lMaXesPltv9IVYn2w7glwlDV06kT8T"/>
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALJrg74fFOdHIw46_1QCIzwqRNZ96yf12FaS5anGDvrDuTW1YFzk6Wq4zT7Zf68Lv3hPbnBocj1K089BNR-QqTQlWzbaVdlB9qUiGnUJ7A4X1QWMFR89Ac5tzcvjJqjRJkXmNXQ29iIVHCQ40v6PSfyBxeFAmhRT3QVqXoddn2Dr5lyBKKVXP_BLe2bbagUDNEBIgRm5_OmNRUZFWAoMzVdT2xRyb8JU4XrbI_Qpc27Kpu2Rb7zQSQKO7B04XFyQNdXnsmG_OyCWHW"/>
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9MSnGy5z5HVlpnzF-eDZbcq7vL2oeugwhNbhmVqpJ1vGUwOCOdaR4AlAkCs7d9_M7Zur86mFAtyGnpvtyHQj0AHuUppyyZxOErAYpSgzix6TL4doyuKsHJCjv2uen-uOAaMwGqLPknWfaJf0KPEZ1N2rhSgesp66Lf0PsjJ6fJgYmwJ3YjfeYyt3CVVkrLoQa2DLB7rxDNM-MzOIAZUrU8odbI4Zeg7m-ZcTGT2nBXfk3xkVunEhkS222OrFv2ziDDi9UJt64LpPe"/>
+</div>
+</td>
+<td class="px-8 py-6 w-64">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+<span>12%</span>
+<span>Concept</span>
+</div>
+<div class="h-1 w-full bg-zinc-100 overflow-hidden">
+<div class="h-full bg-black w-[12%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border border-zinc-300 text-zinc-500">Pending</span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-4 text-zinc-400">
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-lg" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-surface-bright transition-colors">
+<td class="px-8 py-6">
+<div class="flex flex-col">
+<span class="font-bold text-black text-base tracking-tight">The Void Gallery</span>
+<span class="text-xs text-on-surface-variant">Cultural • London, UK</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_-c96PI7BtjiBain-voSiChNUv2lB236pNGXltUkmku5F14YoTq-UzX8bXFd93nQW1Z5h_mz1mFz6imzBoDL4kVlTnpeFzARwTQZoO5T7XTfdjKVEouqkQR-5IjItFoCdc2Mbj0epMIH_2NdYINpOo-L8N6JT6Hk6DanPSmQcvYvNX5Ej3NEsW--UsbZE3YqY5QRyifdw3mpQSHF77ROYU288ECkmhKHwRp2GusZam43jSYVtaD_W9nSFl7RsabfaUYW10u-GiH6C"/>
+</div>
+</td>
+<td class="px-8 py-6 w-64">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+<span>0%</span>
+<span>Dormant</span>
+</div>
+<div class="h-1 w-full bg-zinc-100 overflow-hidden">
+<div class="h-full bg-zinc-300 w-0"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-2.5 py-1 text-[10px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-400">Archived</span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-4 text-zinc-400">
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+<button class="hover:text-black transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-lg" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Status Footer -->
+<div class="mt-12 flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+<div class="flex gap-8">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-zinc-900"></div>
+<span>4 Active Projects</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-zinc-300"></div>
+<span>12 Archived</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="hover:text-black transition-colors disabled:opacity-30" disabled="">Previous</button>
+<div class="flex gap-3">
+<span class="text-black">01</span>
+<span class="opacity-30">02</span>
+<span class="opacity-30">03</span>
+</div>
+<button class="hover:text-black transition-colors">Next</button>
+</div>
+</div>
+</main>
+<!-- Floating Action for Quick Drafting -->
+<div class="fixed bottom-12 right-12">
+<button class="w-14 h-14 bg-black text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</body></html>
