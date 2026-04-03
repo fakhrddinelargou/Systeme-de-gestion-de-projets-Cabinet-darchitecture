@@ -119,7 +119,7 @@
                                     <td class="px-8 py-5 text-right">
                                         <div
                                             class="flex justify-end gap-2  transition-all">
-                                            <button @click="open = true"
+                                            <button 
                                                 class="w-8 h-8 flex items-center justify-center  bg-slate-100 text-slate-600 rounded-lg hover:bg-gray-600 hover:text-white transition-all"><span
                                                     class="material-symbols-outlined text-[16px]!">edit</span>
                                             </button>

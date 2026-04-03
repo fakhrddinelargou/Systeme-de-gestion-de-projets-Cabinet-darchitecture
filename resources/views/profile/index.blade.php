@@ -70,7 +70,7 @@
                         @method('PUT')
                         <input
                             class=" mb-5  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
-                            name='current_password' id='current_password' type="password" placeholder='••••••••'>
+                            name='current_password' id='current_password' type="password" placeholder='••••••••' autocomplete="current-password">
                         <div class="flex items-center gap-4 mb-5">
 
                             <input

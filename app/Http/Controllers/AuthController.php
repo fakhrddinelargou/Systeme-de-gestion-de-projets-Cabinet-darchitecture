@@ -70,7 +70,7 @@ class AuthController extends Controller
 
 
 
-        return redirect()->route('login.page')->with('error', 'Invalid Data');
+        return redirect()->route('login.page')->with('error', 'The email or password you entered is incorrect.');
 
     }
     public function logout(Request $request)
