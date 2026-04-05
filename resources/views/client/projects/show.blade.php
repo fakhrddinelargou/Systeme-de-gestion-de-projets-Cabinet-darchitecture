@@ -1,0 +1,261 @@
+<main class="w-full h-auto min-h-screen pb-5 lg:w-[82%] ml-auto">
+
+    <div class="w-full h-auto  lg:px-15 px-5 pt-10">
+        <div class="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+
+            <div class="">
+                <h2 class="text-4xl font-semibold text-gray-700">Projects Details</h2>
+                <a href={{ route('client.projects') }}
+                    class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-600 transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour aux projects
+                </a>
+            </div>
+
+        </div>
+
+        <div class="w-full p-8 ">
+            <div class="bg-white mb-5 rounded-md shadow-sm border border-gray-100 p-8 ">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <h1 class="text-3xl font-bold text-slate-800 tracking-tight">{{ $project->title }}</h1>
+                            @php
+                                $statusClasses = [
+                                    'pending' => 'bg-amber-50 text-amber-600',
+                                    'accepted' => 'bg-blue-50 text-blue-600',
+                                    'rejected' => 'bg-red-50 text-red-600',
+                                    'in_progress' => 'bg-indigo-50 text-indigo-600',
+                                    'completed' => 'bg-emerald-50 text-emerald-600',
+                                    'archived' => 'bg-slate-100 text-slate-500',
+                                ];
+                            @endphp
+                            <span
+                                class="px-3 py-1 text-xs font-bold rounded-lg uppercase {{ $statusClasses[$project->status] ?? 'bg-slate-50' }} tracking-wider">{{ $project->status }}</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">ID: <span class="font-mono">#{{ $project->reference }}</span> •
+                            Créé le {{ \Carbon\Carbon::parse($project->created_at)->format('d M, Y') }}
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-4 border-l pl-6 border-gray-100">
+                        <img src={{ $project->client->avatar ? asset('storage/' . $project->client->avatar) : asset('assets/images/gust.jpg') }}
+                            class="w-12 h-12 rounded-full border-2 border-white shadow-sm" alt="Client">
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">Propriétaire</p>
+                            <p class="text-sm font-bold text-slate-800">{{ $project->client->fullname }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         
+            @if($project->status != 'rejected')
+
+            <div class="grid grid-cols-1 mb-5 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <!-- Card 1 : Pourcentage -->
+                <div class="rounded-md border border-slate-100 bg-white p-5 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
+                                Pourcentage
+                            </p>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">{{ $project->total_progress }}%</h3>
+                            <p class="mt-1 text-xs text-slate-500">
+                                Progression globale du projet
+                            </p>
+                        </div>
+
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17v-6m4 6V7m4 10V4M5 20h14" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="mb-2 flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-500">Avancement</span>
+                            <span class="text-xs font-bold text-slate-700">{{ $project->total_progress }}%</span>
+                        </div>
+
+                        <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+                            <div class="h-full w-[{{ $project->total_progress }}%] rounded-full bg-indigo-500"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 : Sprint actuelle -->
+                <div class="rounded-md border border-slate-100 bg-white p-5 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
+                                Phase actuelle
+                            </p>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">Phase {{ $phasesCount }}</h3>
+                            <p class="mt-1 text-xs text-slate-500">
+                                Phase active du projet
+                            </p>
+                        </div>
+
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v11a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
+                        <p class="text-xs font-semibold text-amber-700">
+                            {{ $projectPhase->status }} de traitement
+                        </p>
+                        <p class="mt-1 text-[11px] leading-5 text-slate-500">
+                            {{ $projectPhase->description }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3 : Commentaire -->
+                <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
+                                Commentaire
+                            </p>
+                            <h3 class="mt-2 text-base font-extrabold text-slate-800">Dernier retour</h3>
+                            <p class="mt-1 text-xs text-slate-500">
+                                Mise à jour récente du projet
+                            </p>
+                        </div>
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h8m-8 4h5m-7 6h10a2 2 0 002-2V6a2 2 0 00-2-2H8l-4 4v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
+                        <p class="text-sm leading-6 text-slate-600">
+                            Votre demande avance correctement. L’équipe examine actuellement les détails techniques
+                            avant
+                            validation finale.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex mb-5 items-start gap-4">
+                <!-- Card 1 : Résumé de la demande -->
+                <div class="bg-white flex-1 rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-50 flex justify-between items-center">
+                        <h3
+                            class="text-sm font-black uppercase tracking-wider text-slate-700  decoration-slate-700 decoration-2 underline-offset-4">
+                            Résumé de ma demande
+                        </h3>
+
+
+                    </div>
+
+                    <div class="p-5 space-y-4">
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="rounded-lg bg-slate-50 border border-slate-100 p-4">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Type</p>
+                                <p class="mt-2 text-sm font-bold text-slate-700">Résidentiel</p>
+                            </div>
+
+                            <div class="rounded-lg bg-slate-50 border border-slate-100 p-4">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">date limite
+                                </p>
+                                <p class="mt-2 text-sm font-bold text-slate-700">04 Avril 2026</p>
+                            </div>
+
+
+                        </div>
+
+                        <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Description</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">
+                                Demande pour la conception et la réalisation des plans d’une villa moderne avec espace
+                                jardin,
+                                garage et terrasse, selon un style architectural contemporain.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+            <div class="bg-white mb-5 rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <!-- Header -->
+                <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+
+                    <h3
+                        class="text-sm font-black uppercase tracking-wider text-slate-700  decoration-slate-700 decoration-2 underline-offset-4">
+                        Ajouter une remarque
+                    </h3>
+
+                    <span class="text-[10px] font-bold text-slate-400">
+                        Votre avis est important
+                    </span>
+                </div>
+
+                <!-- Content -->
+                <div class="p-5 space-y-4">
+                    <!-- Textarea -->
+                    <div>
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            Votre message
+                        </label>
+
+                        <textarea rows="4" placeholder="Écrivez votre remarque ou votre question..."
+                            class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:bg-white transition"></textarea>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="flex items-center justify-between text-xs text-slate-400">
+                        <span>✔ Votre message sera envoyé à l’administration</span>
+                        <span>Réponse rapide</span>
+                    </div>
+
+                    <!-- Button -->
+                    <div class="flex justify-end">
+                        <button class="flex items-center gap-2 rounded-md cursor-poiter bg-gray-600 px-5 py-2.5 text-sm font-bold text-white 
+                       hover:bg-gray-700 transition duration-200 shadow-sm hover:shadow-md">
+                            <!-- icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h8m-8 4h6M9 21h6a2 2 0 002-2V7l-5-5H9a2 2 0 00-2 2v15a2 2 0 002 2z" />
+                            </svg>
+
+                            Envoyer
+                        </button>
+                    </div>
+                </div>
+            </div>
+           @endif
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+</main>

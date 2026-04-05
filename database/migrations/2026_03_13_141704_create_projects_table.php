@@ -16,9 +16,16 @@ return new class extends Migration {
             $table->string('title');
             $table->text('description');
             $table->string('location');
-            $table->string('reference')->unique(); 
+            $table->string('reference')->unique();
             $table->string('type');
-            $table->enum('status', ['pending', 'in_progress', 'completed', 'archived'])->default('pending');
+            $table->enum('status', [
+                'pending',     
+                'accepted',     
+                'rejected',     
+                'in_progress',  
+                'completed',    
+                'archived'      
+            ])->default('pending');
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->integer('total_progress')->default(0);

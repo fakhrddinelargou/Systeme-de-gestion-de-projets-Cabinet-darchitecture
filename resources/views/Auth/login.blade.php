@@ -42,7 +42,7 @@ for Architecture</p>
                         <label for="password">
                             <div class="flex items-center justify-between">
                                 <p class=" text-[#9CA3AF] font-bold text-[12px] tracking-[1.6px]">PASSWORD</p>
-                                <a href="/" class="font-semibold text-[#6B7280] text-[12px] hover:underline ">Forget
+                                <a href={{ route('forget.password') }} class="font-semibold text-[#6B7280] text-[12px] hover:underline ">Forget
                                     password?</a>
                             </div>
                         </label>

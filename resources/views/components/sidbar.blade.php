@@ -2,11 +2,11 @@
 @vite('resources/css/app.css')
 <div id="btn" onclick="handleSidbar(this)"
     class="z-50 fixed left-5 top-5 duration-300 bg-white w-8 h-8 flex items-center justify-center rounded-full border border-gray-200  lg:hidden">
-            <span class="material-symbols-outlined text-[20px]! " data-icon="menu">menu</span>
+    <span class="material-symbols-outlined text-[20px]! " data-icon="menu">menu</span>
 
 </div>
 <aside data-open="false" id="sidbar"
-    class=" flex flex-col w-[48%] lg:w-[20%] lg:left-0 lg:relative h-screen fixed -left-110 bg-white duration-300 shadow-gray-200 shadow-xl z-50">
+    class=" flex flex-col w-[48%] lg:w-[18%] lg:left-0 lg:fixed h-screen fixed -left-120 bg-white duration-300 shadow-gray-200 shadow-xl z-50">
     <!-- Logo -->
     <div class="mb-5 flex items-center justify-center h-[10vh]">
         <div class='flex items-center justify-center gap-2'>
@@ -17,16 +17,16 @@
 
     <!-- Button Navigation -->
     <div class="flex flex-col gap-2 py-2 px-4">
-        <a href="{{ route('dashboard') }}"
+        <a href="{{ route('dashboard.' . auth()->user()->role->name) }}"
             class=" text-sm flex px-2  py-2  items-center gap-2 hover:bg-gray-200/30 duration-200 font-semibold {{ request()->is('*dashboard') || request()->is('*/') ? 'text-gray-700 border-l-3 border-gray-700 bg-gray-300/20' : 'text-gray-500'   }}">
             <span class="material-symbols-outlined text-[18px]! " data-icon="dashboard">dashboard</span>
             Dashboard
         </a>
 
-        <a href="{{ route('projects') }}"
+        <a href="{{ route(auth()->user()->role->name . '.projects') }}"
             class="text-sm flex px-2  py-2  items-center gap-2 font-semibold hover:bg-gray-200/30 duration-200 {{ request()->is('*projects') ? 'text-gray-700 border-l-3 border-gray-700 bg-gray-300/20' : 'text-gray-500'   }}">
             <span class="material-symbols-outlined text-[18px]!" data-icon="architecture">architecture</span>
-            Projcts
+            Projects
         </a>
         <a href="/"
             class=" text-sm flex px-2  py-2  items-center gap-2 font-semibold hover:bg-gray-200/30 duration-200 {{ request()->is('*clients') ? 'text-gray-700 border-l-3 border-gray-700 bg-gray-300/20' : 'text-gray-500'   }}">

@@ -1,4 +1,4 @@
-<main class="w-full lg:h-screen h-auto ">
+<main class="w-full lg:w-[82%] ml-auto lg:h-screen h-auto ">
     <section class=" w-full h-auto  lg:px-15 px-5 pt-10 ">
         <div class="mb-5">
             <h2 class="text-4xl font-semibold text-gray-700">Dashboard</h2>
@@ -117,16 +117,11 @@
                                         {{ \Carbon\Carbon::parse($user->joined_date)->format('M d, Y') }}
                                     </td>
                                     <td class="px-8 py-5 text-right">
-                                        <div
-                                            class="flex justify-end gap-2  transition-all">
-                                            <button 
-                                                class="w-8 h-8 flex items-center justify-center  bg-slate-100 text-slate-600 rounded-lg hover:bg-gray-600 hover:text-white transition-all"><span
-                                                    class="material-symbols-outlined text-[16px]!">edit</span>
-                                            </button>
+                                        <div class="flex justify-end gap-2  transition-all">
 
-                                            <x-users.delete-user :id="$user->id" >
-                                                <button
-                                                @click="open = true"
+
+                                            <x-users.delete-user :id="$user->id">
+                                                <button @click="open = true"
                                                     class="w-8 h-8 flex items-center justify-center bg-slate-100 text-red-500 rounded-lg hover:bg-red-600 hover:text-white transition-all"><span
                                                         class="material-symbols-outlined text-[16px]!  font-extralight">delete</span>
                                                 </button>
@@ -143,34 +138,20 @@
             <div class=" max-h-[60vh] overflow-y-auto bg-white rounded-md shadow-sm border border-slate-100 p-8">
                 <h3 class="text-xl font-black text-slate-800 mb-6 flex justify-between">
                     Action Required
-                    <span class="bg-red-50 text-red-500 text-[10px]  text-center p-2  my-auto rounded-md">3 New</span>
+                    <span class="bg-red-50 text-red-500 text-[10px]  text-center p-2  my-auto rounded-md">{{ $data['pending_projects'] }} New</span>
                 </h3>
 
                 <div class="space-y-4">
-                    <div
-                        class="flex items-center justify-between p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group">
-                        <div class="flex items-center gap-3">
-                            <img class="w-10 h-10 rounded-full"
-                                src="https://ui-avatars.com/api/?name=Ali+H&background=random" alt="">
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Ali Hamidi</p>
-                                <p class="text-[10px] text-slate-400">Architecte (Identity Check)</p>
-                            </div>
-                        </div>
-                        <button
-                            class="bg-white w-8 h-8 flex items-center justify-center rounded-md shadow-sm text-blue-600 hover:bg-blue-600 hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-sm!">check_circle</span>
-                        </button>
-                    </div>
 
+                @foreach($data['new_projects'] as $project)
                     <div
                         class="flex items-center justify-between p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group">
                         <div class="flex items-center gap-3">
                             <img class="w-10 h-10 rounded-full"
-                                src="https://ui-avatars.com/api/?name=Zineb+M&background=random" alt="">
+                                src={{ $project->avatar ? asset('storage/' . $project->avatar) : asset('assets/images/gust.jpg') }}  alt="">
                             <div>
-                                <p class="text-sm font-bold text-slate-800">Zineb Mansouri</p>
-                                <p class="text-[10px] text-slate-400">New Project Approval</p>
+                                <p class="text-sm font-bold text-slate-800">{{ $project->project_name }}</p>
+                                <p class="text-[10px] text-slate-400">{{ $project->user_name }}</p>
                             </div>
                         </div>
                         <button
@@ -178,6 +159,8 @@
                             <span class="material-symbols-outlined text-sm!">visibility</span>
                         </button>
                     </div>
+                @endforeach
+                  
                 </div>
             </div>
 

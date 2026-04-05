@@ -42,7 +42,7 @@ class PhaseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request )
     {
         $validate = $request->validate([
             'project_id' => 'required|integer|exists:projects,id',
@@ -51,6 +51,10 @@ class PhaseController extends Controller
             'percentage' => 'required|integer|min:0|max:100',
             'due_date' => 'required|date',
         ]);
+
+        if(!$validate){
+        return back()->with('error', 'Data Invalid');
+        }
         ProjectPhase::create($validate);
         return back()->with('success', 'Phase created successfully');
     }

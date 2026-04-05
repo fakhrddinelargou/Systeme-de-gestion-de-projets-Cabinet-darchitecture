@@ -1,7 +1,7 @@
-<main class="w-full lg:h-screen h-auto ">
+<main class="w-full min-h-screen lg:w-[82%] ml-auto bg-slate-50">
     @if ($errors->any())
-        <div class="text-red-500 bg-[#ffeeee] p-3 mb-5 absolute top-4 left-1/2 -translate-x-1/2 rounded-xl ">
-            <ul>
+        <div class="text-red-600 bg-red-50 border border-red-200 px-4 py-3 mb-5 fixed top-4 left-1/2 -translate-x-1/2 rounded-xl shadow-sm z-50">
+            <ul class="text-sm space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -9,101 +9,189 @@
         </div>
     @endif
 
-    <section class=" w-full h-auto  lg:px-15 px-5 pt-10 ">
-
-        <div class="mb-5">
-            <h2 class="text-4xl font-semibold text-gray-700">Profile</h2>
+    <section class="w-full lg:px-12 px-5 pt-10 pb-10">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-slate-800">Profil</h2>
+            <p class="mt-1 text-sm text-slate-500">Gérez vos informations personnelles et votre mot de passe.</p>
         </div>
 
-        <!-- profile -->
-        <section class=" flex items-start mb-5">
+        <section class="mb-8">
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center gap-5">
+                <div class="relative w-fit">
+                    <img
+                        src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/images/gust.jpg') }}"
+                        alt="profile"
+                        class="w-24 h-24 rounded-full object-cover border border-slate-200"
+                    >
 
-            <div class="rounded-full relative">
-<x-update-image>
-    <button @click="open = true" 
-            type="button"
-            class="flex items-center cursor-pointer justify-center absolute bottom-2 right-1 bg-white hover:bg-gray-100 duration-200 border border-gray-200 shadow-sm w-10 h-10 rounded-full">
-        <span class="material-symbols-outlined text-gray-600">draw</span>
-    </button>
-</x-update-image>
-                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/images/gust.jpg') }}"
-                    alt="profile" class="rounded-full  w-35 h-35  ">
+                    <x-update-image>
+                        <button
+                            @click="open = true"
+                            type="button"
+                            class="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition"
+                        >
+                            <span class="material-symbols-outlined text-[16px]!">draw</span>
+                        </button>
+                    </x-update-image>
+                </div>
 
+                <div>
+                    <h3 class="text-xl font-semibold text-slate-800">{{ auth()->user()->fullname }}</h3>
+                    <p class="text-sm text-slate-500 mt-1">{{ auth()->user()->email }}</p>
+                    <p class="text-xs text-slate-400 mt-2">Vous pouvez modifier vos informations ci-dessous.</p>
+                </div>
             </div>
-
-
-
         </section>
 
-        <!-- all -->
-        <section class="flex lg:flex-row flex-col  items-center   gap-5 w-full h-auto">
-            <!-- section 1 -->
-            <section class="lg:w-[60%] w-full h-auto  flex flex-col items-center gap-5 ">
-                <!-- email & fullname -->
-                <div class="bg-white w-full rounded-xl border border-gray-200 shadow-xl p-4">
-                    <h2 class="font-semibold text-gray-600 mb-5">Fullname & Email</h2>
-                    <form action="{{ route('profile.update') }}" method="POST">
-                        @method('PUT')
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <section class="lg:col-span-2 flex flex-col gap-5">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                    <h2 class="text-base font-semibold text-slate-700 mb-5">Informations personnelles</h2>
+
+                    <form action="{{ route('profile.update') }}" method="POST" class="space-y-4">
                         @csrf
-                        <div class="flex items-center gap-4 mb-5">
+                        @method('PUT')
 
-                            <input
-                                class="mt-2  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
-                                name='email' id='email' type="email" placeholder='Jhon@gmail.com'
-                                value="{{ auth()->user()->email }}">
-                            <input
-                                class="mt-2  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
-                                name='fullname' id='fullname' type="text" placeholder='Jhon Smith'
-                                value="{{ auth()->user()->fullname }}">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="fullname" class="block text-sm font-medium text-slate-600 mb-2">
+                                    Nom complet
+                                </label>
+                                <input
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition"
+                                    name="fullname"
+                                    id="fullname"
+                                    type="text"
+                                    placeholder="John Smith"
+                                    value="{{ auth()->user()->fullname }}"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-slate-600 mb-2">
+                                    Adresse e-mail
+                                </label>
+                                <input
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition"
+                                    name="email"
+                                    id="email"
+                                    type="email"
+                                    placeholder="john@gmail.com"
+                                    value="{{ auth()->user()->email }}"
+                                >
+                            </div>
                         </div>
-                        <button type="submit" class="font-semibold text-gray-400 cursor-pointer ">Modife</button>
 
+                        <div class="flex justify-end">
+                            <button
+                                type="submit"
+                                class="px-5 py-2.5 rounded-xl bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition"
+                            >
+                                Enregistrer
+                            </button>
+                        </div>
                     </form>
                 </div>
 
-                <!-- modify password -->
-                <div class="bg-white w-full rounded-xl border border-gray-200 shadow-xl p-4">
-                    <h2 class="font-semibold text-gray-600 mb-5">Modify Your Password</h2>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                    <h2 class="text-base font-semibold text-slate-700 mb-5">Modifier le mot de passe</h2>
 
-                    <form class="" action="{{ route('profile.password') }}" method="POST">
+                    <form action="{{ route('profile.password') }}" method="POST" class="space-y-4">
                         @csrf
                         @method('PUT')
-                        <input
-                            class=" mb-5  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
-                            name='current_password' id='current_password' type="password" placeholder='••••••••' autocomplete="current-password">
-                        <div class="flex items-center gap-4 mb-5">
 
+                        <div>
+                            <label for="current_password" class="block text-sm font-medium text-slate-600 mb-2">
+                                Mot de passe actuel
+                            </label>
                             <input
-                                class="  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
-                                name='password' id='password' type="password" placeholder='••••••••'>
-                            <input
-                                class="text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
-                                name='password_confirmation' id='password_confirmation' type="password"
-                                placeholder='••••••••'>
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition"
+                                name="current_password"
+                                id="current_password"
+                                type="password"
+                                placeholder="••••••••"
+                                autocomplete="current-password"
+                            >
                         </div>
-                        <button type="submit" class="font-semibold text-gray-400 cursor-pointer">Modife</button>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-slate-600 mb-2">
+                                    Nouveau mot de passe
+                                </label>
+                                <input
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition"
+                                    name="password"
+                                    id="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-medium text-slate-600 mb-2">
+                                    Confirmer le mot de passe
+                                </label>
+                                <input
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition"
+                                    name="password_confirmation"
+                                    id="password_confirmation"
+                                    type="password"
+                                    placeholder="••••••••"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button
+                                type="submit"
+                                class="px-5 py-2.5 rounded-xl bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition"
+                            >
+                                Mettre à jour
+                            </button>
+                        </div>
                     </form>
                 </div>
             </section>
-            <!-- section 2 -->
-            <section class="w-[40%]">
-<div class="bg-blue-600 rounded-4xl p-8 text-white shadow-xl">
-    <h4 class="font-black text-lg mb-4">Security Status</h4>
-    <div class="space-y-4">
-        <div class="flex justify-between text-xs font-bold opacity-80 uppercase">
-            <span>Password Strength</span>
-            <span>Strong</span>
-        </div>
-        <div class="w-full bg-blue-400/30 h-1.5 rounded-full">
-            <div class="bg-white h-full w-[85%] rounded-full shadow-[0_0_10px_white]"></div>
-        </div>
-        <p class="text-[10px] opacity-70 mt-2 italic">Last changed 2 months ago. We recommend changing it every 6 months.</p>
-    </div>
-    
-    <button class="w-full mt-8 py-3 bg-white text-blue-600 rounded-xl font-black text-xs uppercase hover:bg-blue-50 transition-all">
-        Enable 2FA
-    </button>
-</div>
+
+            <section class="flex flex-col gap-5">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                    <h4 class="text-base font-semibold text-slate-700 mb-4">Sécurité du compte</h4>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-slate-500">Force du mot de passe</span>
+                                <span class="text-sm font-medium text-slate-700">Moyenne</span>
+                            </div>
+
+                            <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                                <div class="h-full w-[60%] bg-slate-500 rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs leading-5 text-slate-500">
+                            Pensez à mettre à jour votre mot de passe régulièrement pour garder votre compte sécurisé.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                    <h4 class="text-base font-semibold text-slate-700 mb-3">Session</h4>
+                    <p class="text-sm text-slate-500 mb-4">
+                        Vous pouvez vous déconnecter de votre compte à tout moment.
+                    </p>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium text-sm hover:bg-slate-50 transition"
+                        >
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </section>
         </section>
     </section>

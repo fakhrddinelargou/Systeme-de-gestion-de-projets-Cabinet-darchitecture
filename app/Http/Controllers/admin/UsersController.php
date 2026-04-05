@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,7 @@ class UsersController extends Controller
             ->join('roles', 'users.role_id', '=', 'roles.id')
             ->where('users.role_id', '!=', 1)
             ->select('users.*', 'roles.name as role_name')
-            ->paginate(4)
+            ->paginate(2)
             ->withQueryString();
         $total = User::where('role_id', '!=', 1)->count();
 
@@ -30,16 +31,16 @@ class UsersController extends Controller
 
     }
 
-        public function pagination()
+    public function pagination()
     {
         $users = DB::table('users')
             ->join('roles', 'users.role_id', '=', 'roles.id')
             ->where('users.role_id', '!=', 1)
             ->select('users.*', 'roles.name as role_name')
-            ->paginate(1)
+            ->paginate(2)
             ->withQueryString();
 
-                return response()->json([
+        return response()->json([
             'users' => $users
         ]);
 
@@ -88,41 +89,93 @@ class UsersController extends Controller
     }
 
 
-    public function searchByrole(string $role)
+    // CORRECT (Use Request to grab the query parameters)
+    public function searchByrole(Request $request)
     {
+        $role = $request->query('role');
 
+        $query = DB::table('users')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->where('users.role_id', '!=', 1);
 
-        $users = null;
-        if (!empty($role)) {
-
-            $users = DB::table('users')
-                ->join('roles', 'users.role_id', '=', 'roles.id')
-                ->where('users.role_id', '!=', 1)
-                ->where('roles.name', '=', $role )
-                ->select('users.*', 'roles.name as role_name')
-                ->get();
-
+        if (!empty($role) && $role !== 'all') {
+            $query->where('roles.name', '=', $role);
         }
-        return response()->json([
-            'users' => $users->values()
-        ]);
 
+        $users = $query->select('users.*', 'roles.name as role_name')
+            ->paginate(2)
+            ->withQueryString();
+
+        return response()->json([
+            'html' => $users->links()->toHtml(),
+            'data' => $users->items(),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+            ]
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+
+
+    public function block(string $id)
     {
-        //
+        $user = User::where('id', $id)
+            ->where('role_id', '!=', 1)
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found or unauthorized.'
+            ], 404);
+        }
+
+        $user->is_active = !$user->is_active;
+        $user->save();
+
+        $statusText = $user->is_active ? 'Activated' : 'Blocked';
+
+        return response()->json([
+            'message' => "User account has been {$statusText} successfully.",
+            'data' => $user
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function updateRole(Request $request, string $id)
     {
-        //
+        $allowedRoles = ['client', 'architecte'];
+
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User Not Found'], 404);
+        }
+
+        if ($user->id == 1) {
+            return response()->json(['message' => 'Access Denied. You do not have permission to perform this action.'], 403);
+        }
+
+        if (!in_array($request->role, $allowedRoles)) {
+            return response()->json(['message' => 'Invalid Role Name'], 422);
+        }
+
+        $role = Role::where('name', $request->role)->first();
+
+        if (!$role) {
+            return response()->json(['message' => 'Role not found in database'], 404);
+        }
+
+        // 6. Update
+        $user->update([
+            'role_id' => $role->id
+        ]);
+
+        return response()->json([
+            'message' => 'Role updated successfully',
+            'user' => $user->load('role')
+        ], 200);
     }
 
     /**
