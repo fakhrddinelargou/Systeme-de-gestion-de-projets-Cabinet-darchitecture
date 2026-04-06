@@ -102,7 +102,7 @@
                                 <tr class="hover:bg-slate-50/80 transition-all group">
                                     <td class="px-8 py-4">
                                         <div class="flex items-center gap-4">
-                                            <img class="w-11 h-11 rounded-xl border-2 border-white shadow-sm" src={{ $user->avatar ? asset('storage/' . $user->avatar) : asset('assets/images/gust.jpg') }} alt="">
+                                            <img class="w-11 h-11 rounded-xl border-2 border-white shadow-sm" src={{ $user->avatar ? asset('storage/' . $user->avatar) : asset('assets/images/gust.jpg') }} alt="profile">
                                             <div>
                                                 <p class="text-sm font-bold text-slate-800">{{ $user->fullname }}</p>
                                                 <p class="text-[11px] text-slate-400">{{ $user->email }}</p>

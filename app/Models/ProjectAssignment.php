@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectUser extends Model
+class ProjectAssignment extends Model
 {
         protected $fillable = [
-
-    'type',
-    'project_type',
+    'project_id',
     'user_id',
-    'updated_at'
-
+    'updated_at',
+    'role'
     ];
-}
+
+    
+
+ 
+
+    }

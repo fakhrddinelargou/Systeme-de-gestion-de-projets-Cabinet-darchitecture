@@ -101,7 +101,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-5">
-                                    <a href="{{ route('client.projects.show' , $project->id) }}"
+                                    <a href="{{ route('client.project.show' , $project->id) }}"
                                         class="inline-flex items-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100">
                                         Voir détails
                                     </a>

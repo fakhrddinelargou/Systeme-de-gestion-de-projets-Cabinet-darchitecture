@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Models\ProjectAssignment;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Role;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use function Laravel\Prompts\select;
 
 
 class ProjectController extends Controller
@@ -19,7 +21,7 @@ class ProjectController extends Controller
     {
         $projects = DB::table('projects')
             ->join('users', 'users.id', '=', 'projects.client_id')
-            ->select('users.avatar as avatar', 'projects.id as id' , 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
+            ->select('users.avatar as avatar', 'projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
             ->latest('projects.created_at')
             ->get();
         $direction = 'admin.projects.index';
@@ -69,14 +71,59 @@ class ProjectController extends Controller
     public function show(string $id)
     {
         $project = Project::find($id);
-        if(!$project){
-            return redirect()->route('projects')->with('error' , 'Project Not Found');
+        if (!$project) {
+            return redirect()->route('projects')->with('error', 'Project Not Found');
         }
 
-            $direction = 'admin.projects.show';
-        return view('layout.app', compact('direction' , 'project'));
+        $workers = DB::table('users')
+            ->leftJoin('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->where('users.role_id', 2)
+            ->whereNull('project_assignments.user_id')
+            ->select('users.id', 'users.fullname')
+            ->get();
+
+        $project_workers = DB::table('users')
+            ->join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->where('project_assignments.project_id', '=', $id)
+            ->select('users.avatar', 'users.fullname as fullname', 'users.id as id', 'project_assignments.role as role')
+            ->get();
+        
+        $total_workers = ProjectAssignment::where('project_id', $id)->count();
+
+        $direction = 'admin.projects.show';
+        return view('layout.app', compact('direction', 'project', 'workers', 'project_workers' , 'total_workers'));
     }
 
+    public function storeWorker(Request $request, $projectId)
+    {
+
+
+        $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+            'role' => ['required', 'string', 'min:2', 'max:50'],
+        ]);
+
+        $exists = ProjectAssignment::where('project_id', $projectId)
+            ->where('user_id', $request->user_id)
+            ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'User already assigned to this project.');
+        }
+
+        ProjectAssignment::create([
+            'project_id' => $projectId,
+            'user_id' => $request->user_id,
+            'role' => $request->role,
+        ]);
+
+        return back()->with('success', 'Worker added successfully.');
+    }
+
+    public function deleteAssignments(string $id) {
+        ProjectAssignment::where('user_id' , $id)->delete();
+        return back()->with('success', 'Worker deleted successfully.');
+    }
 
     public function filterByStatus(string $status)
     {
@@ -91,7 +138,7 @@ class ProjectController extends Controller
         if ($status == 'all') {
             $projects = DB::table('projects')
                 ->join('users', 'users.id', '=', 'projects.client_id')
-                ->select('users.avatar as avatar','projects.id as id' , 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
+                ->select('users.avatar as avatar', 'projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
                 ->latest('projects.created_at')
                 ->get();
 
@@ -103,7 +150,7 @@ class ProjectController extends Controller
         $projects = DB::table('projects')
             ->join('users', 'users.id', '=', 'projects.client_id')
             ->where('projects.status', '=', $status)
-            ->select('users.avatar as avatar','projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
+            ->select('users.avatar as avatar', 'projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
             ->latest('projects.created_at')
             ->get();
 
@@ -113,18 +160,19 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function search(string $title){
-    
-                $projects = DB::table('projects')
-                ->join('users', 'users.id', '=', 'projects.client_id')
-                ->where('projects.title' , 'like' , '%' . $title . '%')
-                ->select('users.avatar as avatar', 'projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
-                ->latest('projects.created_at')
-                ->get();
+    public function search(string $title)
+    {
 
-                return response()->json([
-                    'projects' => $projects
-                ]);
+        $projects = DB::table('projects')
+            ->join('users', 'users.id', '=', 'projects.client_id')
+            ->where('projects.title', 'like', '%' . $title . '%')
+            ->select('users.avatar as avatar', 'projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
+            ->latest('projects.created_at')
+            ->get();
+
+        return response()->json([
+            'projects' => $projects
+        ]);
     }
 
     /**
@@ -192,25 +240,27 @@ class ProjectController extends Controller
         return back()->with('error', 'Status Error!');
     }
 
-    public function acceptStatus(string $id){
+    public function acceptStatus(string $id)
+    {
 
-    Project::where('id' ,$id)
-               ->update([
+        Project::where('id', $id)
+            ->update([
                 'status' => 'accepted'
-               ]);
+            ]);
 
-    return back()->with('success' , 'Project accepted Successfully');
+        return back()->with('success', 'Project accepted Successfully');
 
     }
 
-        public function refuserStatus(string $id){
+    public function refuserStatus(string $id)
+    {
 
-    Project::where('id' ,$id)
-               ->update([
+        Project::where('id', $id)
+            ->update([
                 'status' => 'rejected'
-               ]);
+            ]);
 
-    return back()->with('success' , 'Project rejected Successfully');
+        return back()->with('success', 'Project rejected Successfully');
 
     }
 

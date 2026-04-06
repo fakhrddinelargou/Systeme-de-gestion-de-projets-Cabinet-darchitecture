@@ -1,6 +1,6 @@
-<main class="w-full h-screen lg:w-[82%] ml-auto ">
+<main class="w-full h-auto min-h-screen lg:w-[82%] ml-auto ">
 
-    <div class="w-full h-auto  lg:px-15 px-5 pt-10">
+    <div class="w-full h-auto  lg:px-15 px-5 p-10">
         <div class="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
 
             <div class="">
@@ -36,9 +36,11 @@
                             <h1 class="text-3xl font-bold text-slate-800 tracking-tight">{{ $project->title }}</h1>
                             @php
                                 $statusClasses = [
-                                    'in_progress' => 'bg-blue-50 text-blue-600',
-                                    'completed' => 'bg-emerald-50 text-emerald-600',
                                     'pending' => 'bg-amber-50 text-amber-600',
+                                    'accepted' => 'bg-blue-50 text-blue-600',
+                                    'rejected' => 'bg-red-50 text-red-600',
+                                    'in_progress' => 'bg-indigo-50 text-indigo-600',
+                                    'completed' => 'bg-emerald-50 text-emerald-600',
                                     'archived' => 'bg-slate-100 text-slate-500',
                                 ];
                             @endphp
@@ -61,170 +63,160 @@
                 </div>
             </div>
 
-            <div class="flex items-center  gap-4">
-                <!-- table 1 -->
-                <div class="bg-white  flex-1 rounded-md border border-slate-100 shadow-sm overflow-hidden">
-                    <div class="p-4 border-b border-slate-50 flex justify-between items-center">
-                        <h3
-                            class="text-sm font-black uppercase tracking-wider text-slate-700 underline decoration-slate-700 decoration-2 underline-offset-4">
-                            Phases du Projet</h3>
-                        <x-projects.create-phase :id="$project->id">
-                            <button @click="open = true"
-                                class="text-[10px] font-black uppercase tracking-widest text-gray-600 hover:text-gray-800 cursor-pointer">+
-                                Ajouter Phase</button>
-                        </x-projects.create-phase>
+        </div>
+        <!-- father -->
+        <div class="flex items-center gap-4">
+            <!-- chil 1 -->
+            <div class=" w-full  lg:w-sm  bg-white rounded-md border border-slate-100 shadow-sm overflow-hidden">
+                <!-- Header -->
+                <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Équipe du projet</h3>
+                        <p class="text-sm text-slate-400 mt-1">Les architectes affectés à ce projet</p>
                     </div>
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-50/50">
-                            <tr>
-                                <th class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Ordre</th>
-                                <th class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Nom de la Phase</th>
-                                <th class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Deadline</th>
-                                <th class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            <tr class="hover:bg-slate-50/80 transition-all">
-                                <td class="px-6 py-4 text-xs font-bold text-slate-400">01</td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-700 italic">Conception & Plans 2D</td>
-                                <td class="px-6 py-4 text-xs text-slate-500">15 Avr, 2026</td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="px-2 py-1 text-[9px] font-black uppercase bg-emerald-50 text-emerald-600 rounded">Terminé</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-all">
-                                <td class="px-6 py-4 text-xs font-bold text-slate-400">02</td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-700 italic">Modélisation 3D</td>
-                                <td class="px-6 py-4 text-xs text-slate-500">02 Mai, 2026</td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="px-2 py-1 text-[9px] font-black uppercase bg-blue-50 text-blue-600 rounded animate-pulse">En
-                                        cours</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                    <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">
+                        {{ $total_workers }} Workers
+                    </span>
                 </div>
-                <!-- table 2 -->
-                <div class="bg-white flex-1 rounded-xl border border-slate-100 shadow-sm overflow-hidden mt-8">
-                    <div class="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                        <h3
-                            class="text-sm font-black uppercase tracking-wider text-slate-700 underline decoration-indigo-500 decoration-2 underline-offset-4">
-                            Détails des Tâches</h3>
-                        <div class="flex gap-2 text-[10px] font-bold text-slate-400">
-                            Dernière mise à jour : <span class="text-indigo-600">Aujourd'hui</span>
+
+                <!-- Workers list -->
+                <div class="p-5 space-y-4">
+                    @forelse ($project_workers as $worker)
+                        <div
+                            class="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 hover:bg-slate-100 transition">
+
+                            <div class="flex items-center gap-3">
+                                <img src={{ $worker->avatar ? asset('storage/' . $worker->avatar) : asset('assets/images/gust.jpg') }} alt="worker"
+                                    class="w-12 h-12 rounded-full object-cover border border-slate-200">
+
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800">
+                                        {{ $worker->fullname ?? 'No Name' }}
+                                    </h4>
+                                    <p class="text-xs text-slate-400">
+                                        {{ $worker->role ?? 'No Role' }}
+                                    </p>
+                                </div>
+                            </div>
+
+<form action="{{route('project.assignments', $worker->id )}}" method="POST">
+    @csrf
+    @method('DELETE')
+
+    <button
+        class="px-3 py-1 rounded-full bg-red-50 cursor-pointer text-red-600 text-[11px] font-bold hover:bg-red-100 transition"
+    >
+        Delete
+    </button>
+</form>
                         </div>
-                    </div>
 
-                    <table class="w-full text-left border-collapse">
-                        <thead class="border-b border-slate-100 bg-slate-50/50">
-                            <tr>
-                                <th class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Tâche / Nom</th>
-                                <th class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Statut (UML)</th>
-                                <th
-                                    class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">
-                                    Modifié le</th>
-                                <th
-                                    class="px-6 py-3 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            <tr class="group hover:bg-slate-50 transition-all">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <input type="checkbox" checked
-                                            class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 transition cursor-pointer">
-                                        <div class="flex flex-col">
-                                            <span
-                                                class="text-xs font-bold text-slate-700 group-hover:text-indigo-600 transition">Rendu
-                                                de la façade Nord</span>
-                                            <span class="text-[9px] text-slate-400 font-medium">Phase :
-                                                Conception</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="px-2.5 py-1 bg-green-50 text-green-600 text-[9px] font-black uppercase rounded-md border border-green-100 shadow-sm">
-                                        DONE
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-[10px] font-bold text-slate-500 italic">02/04/2026</span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div
-                                        class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button
-                                            class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition"
-                                            title="Modifier">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition"
-                                            title="Supprimer">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                    @empty
+                        <div class="text-center text-slate-400 text-sm py-4">
+                            No workers found
+                        </div>
+                    @endforelse
 
-                            <tr class="group hover:bg-slate-50 transition-all">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <input type="checkbox"
-                                            class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 transition cursor-pointer">
-                                        <div class="flex flex-col">
-                                            <span
-                                                class="text-xs font-bold text-slate-700 group-hover:text-indigo-600 transition">Plan
-                                                de coffrage</span>
-                                            <span class="text-[9px] text-slate-400 font-medium italic">Assigné à :
-                                                Fakhreddine</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="px-2.5 py-1 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase rounded-md border border-indigo-100 shadow-sm">
-                                        IN_PROGRESS
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="text-[10px] font-bold text-slate-500 italic">01/04/2026</span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="p-1.5 text-slate-300 hover:text-slate-600 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                                        </svg>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                </div>
+
+
+
+                <!-- Footer button -->
+                <div class="p-5 border-t border-slate-100">
+                    <button onclick="btnAddWorker()"
+                        class="w-full flex items-center justify-center gap-2 rounded-md bg-slate-800 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700 transition">
+                        <span class="material-symbols-outlined text-[20px]">person_add</span>
+                        Add Worker
+                    </button>
                 </div>
             </div>
         </div>
-
-
     </div>
 
 
+    <!-- form add workers -->
+    <div id="selectWorkerForm" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4">
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
 
+            <div
+                class="bg-white w-full max-w-md rounded-md p-8 shadow-md border border-slate-100 relative overflow-hidden">
+
+                <p class="font-semibold text-[24px] mb-5">Add New Worker</p>
+
+                <form class='w-full' action="{{ route('project.add.worker', $project->id) }}" method='POST'>
+                    @csrf
+                    <!-- architectes -->
+                    <div class="mb-6 w-full">
+
+                        <label for="Worker">
+                            <p class="text-[#9CA3AF] font-bold text-[12px] tracking-[1.6px]">ARCHITECTES</p>
+                        </label>
+                        <select required name="user_id" id="worker"
+                            class="mt-2  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100">
+                            <option value="">Select Worker</option>
+                            @foreach($workers as $worker)
+                                <option value={{ $worker->id }}>{{ $worker->fullname }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <!-- EMAIL -->
+                    <div class="">
+
+                        <div class="mb-6 w-full">
+                            <label for="email">
+                                <p class="text-[#9CA3AF] font-bold text-[12px] tracking-[1.6px]">EMAIL ADDRESS</p>
+                            </label>
+                            <input
+                                class="mt-2  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
+                                name='email' required id='email' type="email" placeholder='Jhon@gmail.com'
+                                autocomplete="new-email">
+                        </div>
+                    </div>
+
+                    <!-- ROLE -->
+                    <div class="mb-6 w-full">
+                        <label for="role">
+                            <p class="text-[#9CA3AF] font-bold text-[12px] tracking-[1.6px]">ROLE</p>
+                        </label>
+                        <select name="role" required
+                            class="mt-2  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100">
+                            <option value="3D">3D</option>
+                            <option value="Architect">Architect</option>
+                            <option value="Interior Design">Interior Design</option>
+                        </select>
+                    </div>
+                    <div class="mt-10 flex gap-3">
+                        <button onclick="btnCloseForm()"
+                            class="flex-1 py-4 bg-slate-100 text-slate-600 rounded-md font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                            class="flex-1 rounded-md cursor-pointer h-12 bg-black hover:bg-[#212529] duration-200  text-[14px] text-white font-semibold">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </main>
+
+<script>
+
+    const selectWorkerForm = document.getElementById('selectWorkerForm');
+
+    selectWorkerForm.classList.add('hidden');
+
+    function btnAddWorker() {
+        selectWorkerForm.classList.remove('hidden');
+    }
+
+    function btnCloseForm() {
+        selectWorkerForm.classList.add('hidden');
+    }
+
+
+</script>

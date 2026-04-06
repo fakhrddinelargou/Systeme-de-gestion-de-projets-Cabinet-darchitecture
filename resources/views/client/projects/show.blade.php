@@ -52,7 +52,7 @@
                 </div>
             </div>
          
-            @if($project->status != 'rejected')
+            @if($project->status != 'rejected' )
 
             <div class="grid grid-cols-1 mb-5 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 <!-- Card 1 : Pourcentage -->
@@ -89,6 +89,7 @@
                     </div>
                 </div>
 
+                @if($projectPhase)
                 <!-- Card 2 : Sprint actuelle -->
                 <div class="rounded-md border border-slate-100 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between">
@@ -96,7 +97,7 @@
                             <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
                                 Phase actuelle
                             </p>
-                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">Phase {{ $phasesCount }}</h3>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">Phase {{ $phasesCount    }}</h3>
                             <p class="mt-1 text-xs text-slate-500">
                                 Phase active du projet
                             </p>
@@ -120,7 +121,7 @@
                         </p>
                     </div>
                 </div>
-
+                @endif
                 <!-- Card 3 : Commentaire -->
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between">

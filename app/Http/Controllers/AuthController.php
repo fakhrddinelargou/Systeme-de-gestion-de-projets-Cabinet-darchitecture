@@ -54,8 +54,10 @@ class AuthController extends Controller
         if ($user) {
             Auth::login($user);
             $request->session()->regenerate();
+            $role = auth()->user()->role->name;
+            
+            return redirect()->route($role .'.dashboard');
 
-            return redirect()->route('dashboard');
 
         }
 
@@ -67,7 +69,7 @@ class AuthController extends Controller
         if (Auth::attempt($data)) {
             $request->session()->regenerate();
             $role = auth()->user()->role->name;
-            return redirect()->route('dashboard.'. $role );
+            return redirect()->route($role .'.dashboard');
 
         }
 

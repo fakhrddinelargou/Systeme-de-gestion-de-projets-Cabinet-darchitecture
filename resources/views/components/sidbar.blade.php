@@ -17,7 +17,7 @@
 
     <!-- Button Navigation -->
     <div class="flex flex-col gap-2 py-2 px-4">
-        <a href="{{ route('dashboard.' . auth()->user()->role->name) }}"
+        <a href="{{ route(auth()->user()->role->name .'.dashboard') }}"
             class=" text-sm flex px-2  py-2  items-center gap-2 hover:bg-gray-200/30 duration-200 font-semibold {{ request()->is('*dashboard') || request()->is('*/') ? 'text-gray-700 border-l-3 border-gray-700 bg-gray-300/20' : 'text-gray-500'   }}">
             <span class="material-symbols-outlined text-[18px]! " data-icon="dashboard">dashboard</span>
             Dashboard
