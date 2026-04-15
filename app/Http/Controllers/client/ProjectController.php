@@ -15,10 +15,10 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::where('client_id' , auth()->id())
-                            ->get(); 
+        $projects = Project::where('client_id', auth()->id())
+            ->get();
         $direction = 'client.projects.index';
-    return view('layout.app' , compact('direction' , 'projects'));
+        return view('layout.app', compact('direction', 'projects'));
     }
 
     /**
@@ -46,10 +46,10 @@ class ProjectController extends Controller
             'type' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'total_progress' => 'min:0|max:100',
+            'total_progress' => 'required|min:0|max:100',
         ]);
 
-        Project::create([...$validate , 'client_id' => Auth::id()]);
+        Project::create([...$validate, 'client_id' => Auth::id()]);
 
         return back()->with('success', 'creation successfully');
 
@@ -61,16 +61,22 @@ class ProjectController extends Controller
     public function show(string $id)
     {
         $project = Project::find($id);
-$projectPhase = DB::table('project_phases')
-    ->where('project_id', $id)
-    ->latest('created_at')
-    ->first();
+        $phases = DB::table('project_phases')
+            ->where('project_id', $id)
+            ->latest('created_at')
+            ->first();
 
-    $phasesCount = DB::table('project_phases')
-    ->where('project_id', $id)
-    ->count();
+        $stats = DB::table('project_phases')
+            ->where('project_id', $id)
+            ->select(
+                DB::raw('SUM(percentage) as total_percentage'),
+                DB::raw('COUNT(id) as total_sprint')
+            )
+            ->first();
+
+            
         $direction = 'client.projects.show';
-        return view('layout.app' , compact('direction' , 'project' , 'projectPhase' ,'phasesCount'));
+        return view('layout.app', compact('direction', 'project', 'stats', 'phases'));
     }
 
     /**

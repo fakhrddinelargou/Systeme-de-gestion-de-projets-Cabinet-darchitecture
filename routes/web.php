@@ -8,6 +8,7 @@ use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\client\DashboardController as ClientDashboarController;
 use App\Http\Controllers\architecte\DashboardController as ArchitecteDashboarController;
 use App\Http\Controllers\PhaseController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\admin\UsersController;
 use App\Models\Project;
@@ -40,6 +41,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('projects/search/{title}', [AdminProjectController::class, 'search'])->name('projects.search.title');
 
     Route::middleware('role:admin')->group(function () {
         Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -55,20 +57,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users/filter', [UsersController::class, 'searchByrole'])->name('search.user.role');
 
         Route::get('admin/projects', [AdminProjectController::class, 'index'])->name('admin.projects');
-        Route::get('admin/projects/details/{id}', [AdminProjectController::class, 'show'])->name('admin.projects.show');
+        Route::get('projects/update/{id}', [AdminProjectController::class, 'update'])->name('projects.update');
+        Route::put('projects/edite/{id}', [AdminProjectController::class, 'edite'])->name('projects.edite');
 
+        
         Route::put('projects/accept/status/{id}', [AdminProjectController::class, 'acceptStatus'])->name('admin.accept.status');
         Route::put('projects/refuser/status/{id}', [AdminProjectController::class, 'refuserStatus'])->name('admin.refuser.status');
 
-        Route::get('projects/filter/status/{status}', [AdminProjectController::class, 'filterByStatus'])->name('projects.filter.status');
-        Route::get('projects/search/{title}', [AdminProjectController::class, 'search'])->name('projects.search.title');
-        Route::post('projects/phases', [PhaseController::class, 'store'])->name('phases.store');
-
+        
+        
         Route::post('/project/add/worker/{id}', [AdminProjectController::class, 'storeWorker'])->name('project.add.worker');
         Route::delete('project-assignments/{id}', [AdminProjectController::class, 'deleteAssignments'])->name('project.assignments');
-
-    });
-
+        
+  
+        
+        
+        });
+        
     Route::middleware('role:client')->group(function (){
 
         Route::get('client/dashboard', [ClientDashboarController::class, 'index'])->name('client.dashboard');
@@ -86,11 +91,33 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:architecte')->group(function(){
         Route::get('architecte/dashboard', [ArchitecteDashboarController::class, 'index'])->name('architecte.dashboard');
 
-        Route::get('architecte/projects', [ClientProjectController::class, 'index'])->name('architecte.projects');
+        Route::get('architecte/projects', [ArchitecteProjectController::class, 'index'])->name('architecte.projects');
 
-    
+        Route::get('architecte/projects/details/{id}', [AdminProjectController::class, 'show'])->name('architecte.projects.show');
+        
 
     });
+
+
+    Route::middleware('role:admin,architecte')->group(function (){
+    
+          // admin/architecte
+        Route::get('admin/projects/details/{id}', [AdminProjectController::class, 'show'])->name('admin.projects.show');
+        Route::get('projects/filter/status/{status}', [AdminProjectController::class, 'filterByStatus'])->name('projects.filter.status');
+        Route::post('projects/phases', [PhaseController::class, 'store'])->name('phases.store');
+        Route::get('/show-sprint/{id}', [PhaseController::class, 'show'])->name('show.sprint');
+        Route::post('/project-sprint', [PhaseController::class, 'store'])->name('project.sprint.create');
+        Route::post('/project-task-create', [TaskController::class, 'store'])->name('project.task.create');
+        Route::put('/project-sprint-update/{id}', [PhaseController::class, 'update'])->name('project.sprint.update');
+        Route::delete('/project-sprint-delete/{id}', [PhaseController::class, 'destroy'])->name('project.sprint.delete');
+      
+        Route::put('/project-task-update', [TaskController::class, 'update'])->name('project.task.update');
+        Route::put('/project-task-delete', [TaskController::class, 'update'])->name('project.task.delete');
+
+
+    });
+
+
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile/info', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');

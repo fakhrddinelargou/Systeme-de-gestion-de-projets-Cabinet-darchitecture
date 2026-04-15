@@ -1,5 +1,4 @@
 <main class="w-full h-auto min-h-screen pb-5 lg:w-[82%] ml-auto">
-
     <div class="w-full h-auto  lg:px-15 px-5 pt-10">
         <div class="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
 
@@ -62,7 +61,7 @@
                             <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
                                 Pourcentage
                             </p>
-                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">{{ $project->total_progress }}%</h3>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">{{ $stats->total_sprint ? $stats->total_percentage / $stats->total_sprint : '0' }}%</h3>
                             <p class="mt-1 text-xs text-slate-500">
                                 Progression globale du projet
                             </p>
@@ -80,16 +79,16 @@
                     <div class="mt-4">
                         <div class="mb-2 flex items-center justify-between">
                             <span class="text-xs font-semibold text-slate-500">Avancement</span>
-                            <span class="text-xs font-bold text-slate-700">{{ $project->total_progress }}%</span>
+                            <span class="text-xs font-bold text-slate-700">{{ $stats->total_sprint ? $stats->total_percentage / $stats->total_sprint : '0' }}%</span>
                         </div>
 
                         <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
-                            <div class="h-full w-[{{ $project->total_progress }}%] rounded-full bg-indigo-500"></div>
+                            <div style="width:{{ $stats->total_sprint ? $stats->total_percentage / $stats->total_sprint : '0' }}%" class="h-full  rounded-full bg-indigo-500"></div>
                         </div>
                     </div>
                 </div>
 
-                @if($projectPhase)
+                @if($phases)
                 <!-- Card 2 : Sprint actuelle -->
                 <div class="rounded-md border border-slate-100 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between">
@@ -97,7 +96,7 @@
                             <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
                                 Phase actuelle
                             </p>
-                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">Phase {{ $phasesCount    }}</h3>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-800">Phase {{ $stats->total_sprint }}</h3>
                             <p class="mt-1 text-xs text-slate-500">
                                 Phase active du projet
                             </p>
@@ -114,45 +113,15 @@
 
                     <div class="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
                         <p class="text-xs font-semibold text-amber-700">
-                            {{ $projectPhase->status }} de traitement
+                            {{ $phases->status }} de traitement
                         </p>
                         <p class="mt-1 text-[11px] leading-5 text-slate-500">
-                            {{ $projectPhase->description }}
+                            {{ $phases->description }}
                         </p>
                     </div>
                 </div>
                 @endif
-                <!-- Card 3 : Commentaire -->
-                <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
-                                Commentaire
-                            </p>
-                            <h3 class="mt-2 text-base font-extrabold text-slate-800">Dernier retour</h3>
-                            <p class="mt-1 text-xs text-slate-500">
-                                Mise à jour récente du projet
-                            </p>
-                        </div>
 
-                        <div
-                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 10h8m-8 4h5m-7 6h10a2 2 0 002-2V6a2 2 0 00-2-2H8l-4 4v10a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
-                        <p class="text-sm leading-6 text-slate-600">
-                            Votre demande avance correctement. L’équipe examine actuellement les détails techniques
-                            avant
-                            validation finale.
-                        </p>
-                    </div>
-                </div>
             </div>
 
             <div class="flex mb-5 items-start gap-4">

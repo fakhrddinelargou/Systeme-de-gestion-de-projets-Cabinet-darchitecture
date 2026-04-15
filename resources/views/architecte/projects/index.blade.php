@@ -55,7 +55,7 @@
                 </thead>
 
                 <tbody id="tbody_projects" class="divide-y divide-slate-50">
-                    @foreach($projects as $project)
+                    @forelse($projects as $project)
                         <tr class="hover:bg-slate-50/50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex flex-col">
@@ -77,11 +77,12 @@
                             <td class="px-6 py-4 w-1/4">
                                 <div class="flex flex-col gap-1.5">
                                     <div class="flex justify-between text-[10px] font-bold text-slate-500">
-                                        <span>{{ $project->total_sprint ?  $project->total_progress / $project->total_sprint : '0' }}%</span>
+                                        <span>{{ $project->total_progress }}%</span>
+                                        <span>Phase villa</span>
                                     </div>
                                     <div class="w-full bg-slate-100 rounded-full h-1.5">
                                         <div class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500"
-                                            style="width: {{ $project->total_sprint ?  $project->total_progress / $project->total_sprint : '0' }}%"></div>
+                                            style="width: {{ $project->total_progress }}%"></div>
                                     </div>
                                 </div>
                             </td>
@@ -106,40 +107,40 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2">
                                     @if($project->status == 'pending')
-                                       <form action="{{ route('admin.refuser.status', $project->id) }}" method="POST">
-                                                                    @csrf
-                                                                    @method('PUT')
-                                                                <button type='submit' title="Refuser" class="flex items-center justify-center w-7 h-7 rounded-lg bg-red-100 text-red-600 
-                                                                  hover:bg-red-600 hover:text-white 
-                                                                  shadow-sm hover:shadow-md 
-                                                                  focus:outline-none focus:ring-2 focus:ring-red-400 
-                                                                  transition duration-200">
+                                        <form action="{{ route('admin.refuser.status', $project->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type='submit' title="Refuser" class="flex items-center justify-center w-7 h-7 rounded-lg bg-red-100 text-red-600 
+                                                                          hover:bg-red-600 hover:text-white 
+                                                                          shadow-sm hover:shadow-md 
+                                                                          focus:outline-none focus:ring-2 focus:ring-red-400 
+                                                                          transition duration-200">
 
-                                                                    <!-- Icon X -->
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                                        viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                            d="M6 18L18 6M6 6l12 12" />
-                                                                    </svg>
-                                                                </button>
-                                                                </form>
-                                                                <form action="{{ route('admin.accept.status', $project->id) }}" method="POST">
-                                                                    @csrf
-                                                                    @method('PUT')
-                                                                    <button type='submit' title="Accepte" class="flex items-center justify-center w-7 h-7 rounded-lg bg-green-100 text-green-600 
-                                                                               hover:bg-green-600 hover:text-white 
-                                                                               shadow-sm hover:shadow-md 
-                                                                               focus:outline-none focus:ring-2 focus:ring-green-400 
-                                                                               transition duration-200">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                                            viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                                d="M5 13l4 4L19 7" />
-                                                                        </svg>
-                                                                    </button>
-                                                                </form>
+                                                <!-- Icon X -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('admin.accept.status', $project->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type='submit' title="Accepte" class="flex items-center justify-center w-7 h-7 rounded-lg bg-green-100 text-green-600 
+                                                                                       hover:bg-green-600 hover:text-white 
+                                                                                       shadow-sm hover:shadow-md 
+                                                                                       focus:outline-none focus:ring-2 focus:ring-green-400 
+                                                                                       transition duration-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </button>
+                                        </form>
                                     @endif
-                                    <a href="{{ route('admin.projects.show' ,$project->id) }}" title="show details"
+                                    <a href="{{ route('architecte.projects.show', $project->id) }}" title="show details"
                                         class="p-1.5 cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -149,7 +150,35 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    
+                    @empty
+<tr>
+    <td colspan="6" class="px-6 py-12 text-center">
+        
+        <div class="flex flex-col items-center justify-center">
+            
+            <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+
+            <h3 class="text-lg font-semibold text-slate-700">
+                Aucun projet trouvé
+            </h3>
+
+            <p class="text-sm text-slate-400 mt-1">
+                Vous n’avez encore aucun projet assigné.
+            </p>
+
+
+        </div>
+
+    </td>
+</tr>
+@endempty
+                    
                 </tbody>
             </table>
         </div>

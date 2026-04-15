@@ -14,15 +14,15 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next ,  $role): Response
+    public function handle(Request $request, Closure $next ,  ...$role): Response
     {
         if(!auth()->check()){
             return redirect()->route('login');
         }
         
-        if(auth()->check() && auth()->user()->role->name ===  $role){
+        if(auth()->check() && in_array(auth()->user()->role->name , $role)){
             return $next($request);
         }
-        return redirect('/')->with('error', 'Forbidden');
+        return back()->with('error', "Sorry , you don't have access :(");
     }
 }

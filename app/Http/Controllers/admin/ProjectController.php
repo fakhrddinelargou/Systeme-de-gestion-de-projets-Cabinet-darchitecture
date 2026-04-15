@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\ProjectAssignment;
-use App\Models\User;
+// use App\Models\User;
+use App\Models\ProjectPhase;
+use Illuminate\Validation\Rule;
+
 use App\Models\Project;
-use App\Models\Role;
+// use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
-use function Laravel\Prompts\select;
+// use Illuminate\Support\Facades\Hash;
+// use Illuminate\Validation\Rules\Password;
+// use function Laravel\Prompts\select;
 
 
 class ProjectController extends Controller
@@ -19,11 +22,34 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $projects = DB::table('projects')
-            ->join('users', 'users.id', '=', 'projects.client_id')
-            ->select('users.avatar as avatar', 'projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
-            ->latest('projects.created_at')
-            ->get();
+ $projects = DB::table('projects')
+    ->join('users', 'users.id', '=', 'projects.client_id')
+    ->leftjoin('project_phases', 'projects.id', '=', 'project_phases.project_id')
+    ->select(
+        'users.avatar as avatar',
+        'projects.id as id',
+        'users.fullname as client_name',
+        'projects.reference as reference',
+        'projects.title as title',
+        'projects.status as status',
+        'projects.created_at',
+        DB::raw('SUM(project_phases.percentage) as total_progress'),
+        DB::raw('COUNT(project_phases.id) as total_sprint')
+    )
+    ->groupBy(
+        'users.avatar',
+        'users.fullname',
+        'projects.id',
+        'projects.reference',
+        'projects.title',
+        'projects.status',
+        'projects.created_at'
+    )
+    ->orderBy('projects.created_at', 'desc')
+    ->get();
+
+//    dd($projects);
+
         $direction = 'admin.projects.index';
         return view('layout.app', compact('projects', 'direction'));
 
@@ -87,11 +113,19 @@ class ProjectController extends Controller
             ->where('project_assignments.project_id', '=', $id)
             ->select('users.avatar', 'users.fullname as fullname', 'users.id as id', 'project_assignments.role as role')
             ->get();
-        
+
         $total_workers = ProjectAssignment::where('project_id', $id)->count();
+        $sprints = ProjectPhase::where('project_id', $id)
+            ->get();
+        $total_sprints = ProjectPhase::where('project_id', $id)->count();
+        $total_sprint_completed = ProjectPhase::where('project_id', $id)->where('status', '=', 'completed')->count();
+
+        $total_percentage = ProjectPhase::where('project_id', $id)
+            ->sum('percentage');
+        $percentage_global = $total_percentage > 0 ? ($total_percentage / $total_sprints) : 0;
 
         $direction = 'admin.projects.show';
-        return view('layout.app', compact('direction', 'project', 'workers', 'project_workers' , 'total_workers'));
+        return view('layout.app', compact('direction', 'sprints', 'total_sprint_completed', 'percentage_global', 'total_sprints', 'project', 'workers', 'project_workers', 'total_workers'));
     }
 
     public function storeWorker(Request $request, $projectId)
@@ -120,8 +154,9 @@ class ProjectController extends Controller
         return back()->with('success', 'Worker added successfully.');
     }
 
-    public function deleteAssignments(string $id) {
-        ProjectAssignment::where('user_id' , $id)->delete();
+    public function deleteAssignments(string $id)
+    {
+        ProjectAssignment::where('user_id', $id)->delete();
         return back()->with('success', 'Worker deleted successfully.');
     }
 
@@ -178,21 +213,28 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Project $project)
+    public function update(string $id)
     {
-        $direction = 'project.edit';
-        return view('layout.app', compact('direction', 'project'));
+        $project = Project::find($id);
+
+        return view('admin.projects.update', compact('project'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function edite(Request $request, string $id)
     {
         $validate = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string',
+            'reference' => [
+                'required',
+                'string',
+                Rule::unique('projects', 'reference')->ignore($id),
+            ],
+            'total_progress' => 'min:0|max:100',
             'type' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',

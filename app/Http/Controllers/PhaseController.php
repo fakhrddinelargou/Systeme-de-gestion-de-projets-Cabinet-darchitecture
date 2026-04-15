@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProjectPhase;
+use Illuminate\Support\Facades\DB;
+use App\Models\Task;
 
 
 class PhaseController extends Controller
@@ -42,18 +44,18 @@ class PhaseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request )
+    public function store(Request $request)
     {
         $validate = $request->validate([
             'project_id' => 'required|integer|exists:projects,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'percentage' => 'required|integer|min:0|max:100',
-            'due_date' => 'required|date',
+            'percentage' => 'integer|min:0|max:100',
+            'due_date' => 'required|date|after:today',
         ]);
 
-        if(!$validate){
-        return back()->with('error', 'Data Invalid');
+        if (!$validate) {
+            return back()->with('error', 'Data Invalid');
         }
         ProjectPhase::create($validate);
         return back()->with('success', 'Phase created successfully');
@@ -62,10 +64,52 @@ class PhaseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProjectPhase $projectPhase)
+    public function show(string $id)
     {
-        $direction = 'project.phase.show';
-        return view('layout.app', compact('direction', 'projectPhase'));
+        $sprint = ProjectPhase::find($id);
+        $project_id = $sprint->project->id;
+
+        $pending_task = DB::table('tasks')
+                          ->join('users' , 'users.id' , '=' , 'tasks.user_id')
+                          ->where('tasks.status' , '=' , 'pending')
+                          ->select('tasks.*' , 'users.avatar as avatar', 'users.fullname as fullname')
+                        ->get();
+
+
+        $inProgress_task = DB::table('tasks')
+                          ->join('users' , 'users.id' , '=' , 'tasks.user_id')
+                          ->where('tasks.status' , '=' , 'in_progress')
+                          ->select('tasks.*' , 'users.avatar as avatar', 'users.fullname as fullname')
+                            ->get();
+                          
+        $completed_task = DB::table('tasks')
+                          ->join('users' , 'users.id' , '=' , 'tasks.user_id')
+                          ->where('tasks.status' , '=' , 'completed')
+                          ->select('tasks.*' , 'users.avatar as avatar', 'users.fullname as fullname')
+                          ->get();
+                            
+
+        $total_pending_task = Task::where('sprint_id', $id)
+            ->where('status', '=', 'pending')
+            ->count();
+
+        $total_inProgress_task = Task::where('sprint_id', $id)
+            ->where('status', '=', 'in_progress')
+            ->count();
+
+        $total_completed_task = Task::where('sprint_id', $id)
+            ->where('status', '=', 'completed')
+            ->count();
+        
+            $statusCount = [
+                'pending' => $total_pending_task,
+                'inProgress' => $total_inProgress_task,
+                'completed' => $total_completed_task
+            ];
+        
+
+        $direction = 'admin.projects.sprint.show';
+        return view('layout.app', compact('direction', 'sprint', 'project_id', 'pending_task', 'inProgress_task', 'completed_task' , 'statusCount'));
     }
 
     /**
@@ -85,25 +129,36 @@ class PhaseController extends Controller
         $validate = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'percentage' => 'required|integer|min:0|max:100',
-            'due_date' => 'required|date',
+            'status' => 'string',
+            'percentage' => 'integer|min:0|max:100',
+            'due_date' => 'required|date|after:today',
         ]);
 
         $projectPhase = ProjectPhase::findOrFail($id);
 
-        $totalOthers = ProjectPhase::where('project_id', $projectPhase->project_id)
-            ->where('id', '!=', $id)
-            ->sum('percentage');
+        // $totalOthers = ProjectPhase::where('project_id', $projectPhase->project_id)
+        //     ->where('id', '!=', $id)
+        //     ->sum('percentage');
 
-        if (($totalOthers + $request->percentage) > 100) {
-            return back()->with('error', "L-majmo3 maghadi-ch i-koun s7i7! (Max allowed for this phase: " . (100 - $totalOthers) . "%)");
-        }
+        // if (($totalOthers + $request->percentage) > 100) {
+        //     return back()->with('error', "L-majmo3 maghadi-ch i-koun s7i7! (Max allowed for this phase: " . (100 - $totalOthers) . "%)");
+        // }
 
         $projectPhase->update($validate);
 
         return back()->with('success', 'Phase updated successfully');
     }
 
+
+
+    public function destroy(string $id){
+        $sprint = ProjectPhase::find($id);
+        if(!$sprint){
+            return back()->with('error','Sprint Not Found');
+        }
+        $sprint->delete();
+        return back()->with('success','Sprint Deleted Successfully');
+    }
 
 
 }

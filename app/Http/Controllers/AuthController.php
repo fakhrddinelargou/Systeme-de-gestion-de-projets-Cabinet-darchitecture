@@ -65,6 +65,7 @@ class AuthController extends Controller
     }
     public function login(LoginRequest $request)
     {
+        // dd($request);
         $data = $request->validated();
         if (Auth::attempt($data)) {
             $request->session()->regenerate();
@@ -110,7 +111,7 @@ public function sendMail(Request $request)
         'created_at' => now(),
     ]);
 
-    Mail::to($request->email)->queue(new ResetPasswordMail($token, $request->email));
+    Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
 
     return back()->with('success', 'Mail sent successfully');
 }
@@ -150,6 +151,7 @@ public function updatePassword(Request $request)
         ->where('email', $request->email)
         ->first();
 
+        // dd($record);
     if (!$record) {
         return back()->with([
             'error' => 'Invalid or expired token'

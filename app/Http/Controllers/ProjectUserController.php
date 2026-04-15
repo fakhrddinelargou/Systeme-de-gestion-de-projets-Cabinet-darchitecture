@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Models\ProjectUser;
 
@@ -75,7 +76,7 @@ class ProjectUserController extends Controller
      */
     public function destroy(string $id)
     {
-        $projectUser = ProjectUser::findOrFail($id);
+        $projectUser = Project::findOrFail($id);
         $projectUser->delete();
         return back()->with('success', 'User removed from project successfully');
     }

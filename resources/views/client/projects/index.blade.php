@@ -82,7 +82,7 @@
                                         <p class="mt-1 text-sm text-slate-400">Réf : #{{ $project->reference }}</p>
                                     </div>
                                 </td>
-                                <td class="px-6 py-5 text-sm text-slate-600"> {{ \Carbon\Carbon::parse($project->joined_date)->format('M d, Y') }}</td>
+                                <td class="px-6 py-5 text-sm text-slate-600"> {{ \Carbon\Carbon::parse($project->created_at)->format('M d, Y') }}</td>
                                 <td class="px-6 py-5 text-sm text-slate-600">{{ $project->type }}</td>
                                 <td class="px-6 py-5">
                                                                                 @php

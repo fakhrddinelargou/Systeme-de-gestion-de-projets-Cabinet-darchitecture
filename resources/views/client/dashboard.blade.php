@@ -241,30 +241,7 @@
                         </span>
                     </a>
 
-                    @foreach($data['recent_comments'] as $comment)
-                        <div
-                            class="flex items-center justify-between p-4 bg-slate-50 rounded-md border border-transparent hover:border-purple-200 transition-all group">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-purple-600 text-[20px]">chat</span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-800">title</p>
-                                    @if($data['recent_comments'])
-                                        <p class="text-[10px] text-slate-400">
-                                            {{ \Illuminate\Support\Str::limit($data['recent_comments']->comment, 35) }}
-                                        </p>
-                                    @else
-                                        <p class="text-[10px] text-slate-400">Aucun commentaire</p>
-                                    @endif
-                                </div>
-                            </div>
-                            <a 
-                                class="bg-white w-8 h-8 flex items-center justify-center rounded-md shadow-sm text-purple-600 hover:bg-purple-600 hover:text-white transition-all">
-                                <span class="material-symbols-outlined text-sm!">visibility</span>
-                            </a>
-                        </div>
-                    @endforeach
+
 
                 </div>
             </div>
