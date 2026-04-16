@@ -306,7 +306,7 @@
 
     <form  action="{{ route('project.task.update') }}" method="POST" class="bg-white  max-w-6xl rounded-xl shadow-2xl overflow-hidden flex">
    @csrf
-   @method('put')
+   @method('PUT')
    <input type="hidden" name="task_id" id="task_id" >
    <input type="hidden" name="sprint_id" id="sprint_id" >
         <div class=" p-6 space-y-6">
@@ -355,11 +355,9 @@
                     Edit
                 </button>
 
-                <x-task.delete-task>
                 <button class="px-4 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm">
                     Delete
                 </button>
-                </x-task.delete-task>
 
             </div>
 

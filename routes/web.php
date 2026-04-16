@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\client\DashboardController as ClientDashboarController;
 use App\Http\Controllers\architecte\DashboardController as ArchitecteDashboarController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
@@ -15,6 +16,8 @@ use App\Models\Project;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/home' , [HomeController::class , 'index'])->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'registerPage'])->name('register.page');
@@ -112,7 +115,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/project-sprint-delete/{id}', [PhaseController::class, 'destroy'])->name('project.sprint.delete');
       
         Route::put('/project-task-update', [TaskController::class, 'update'])->name('project.task.update');
-        Route::put('/project-task-delete', [TaskController::class, 'update'])->name('project.task.delete');
+        Route::delete('/project-task-delete', [TaskController::class, 'destroy'])->name('project.task.delete');
 
 
     });
