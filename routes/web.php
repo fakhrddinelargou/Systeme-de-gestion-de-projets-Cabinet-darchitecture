@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/home' , [HomeController::class , 'index'])->name('home');
+Route::get('/about' , [HomeController::class , 'about'])->name('about');
+Route::get('/contact' , [HomeController::class , 'contact'])->name('contact');
+Route::get('/features' , [HomeController::class , 'features'])->name('features');
+Route::get('/Privacy-Policy' , [HomeController::class , 'privacy'])->name('privacy');
+Route::get('/terms-of-service' , [HomeController::class , 'terms'])->name('terms');
+Route::get('/support' , [HomeController::class , 'support'])->name('support');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'registerPage'])->name('register.page');
