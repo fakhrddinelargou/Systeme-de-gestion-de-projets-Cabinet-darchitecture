@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\admin\ProjectController as AdminProjectController;
-use App\Http\Controllers\client\ProjectController as ClientProjectController ;
-use App\Http\Controllers\architecte\ProjectController as ArchitecteProjectController ;
+use App\Http\Controllers\client\ProjectController as ClientProjectController;
+use App\Http\Controllers\architecte\ProjectController as ArchitecteProjectController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\client\DashboardController as ClientDashboarController;
@@ -17,13 +17,13 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/home' , [HomeController::class , 'index'])->name('home');
-Route::get('/about' , [HomeController::class , 'about'])->name('about');
-Route::get('/contact' , [HomeController::class , 'contact'])->name('contact');
-Route::get('/features' , [HomeController::class , 'features'])->name('features');
-Route::get('/Privacy-Policy' , [HomeController::class , 'privacy'])->name('privacy');
-Route::get('/terms-of-service' , [HomeController::class , 'terms'])->name('terms');
-Route::get('/support' , [HomeController::class , 'support'])->name('support');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/features', [HomeController::class, 'features'])->name('features');
+Route::get('/Privacy-Policy', [HomeController::class, 'privacy'])->name('privacy');
+Route::get('/terms-of-service', [HomeController::class, 'terms'])->name('terms');
+Route::get('/support', [HomeController::class, 'support'])->name('support');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'registerPage'])->name('register.page');
@@ -61,32 +61,30 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/admin/update/users/{id}', [UsersController::class, 'updateRole'])->name('user.update.role');
 
         Route::put('/admin/users/{id}/block', [UsersController::class, 'block'])->name('block.user');
-        Route::get('/pagination', [UsersController::class, 'pagination'])->name('pagination');
-        Route::get('/admin/search/{name}', [UsersController::class, 'search'])->name('search.user');
-        Route::get('/users/filter', [UsersController::class, 'searchByrole'])->name('search.user.role');
+        // Route::get('/admin/search', [UsersController::class, 'search'])->name('search.user');
 
         Route::get('admin/projects', [AdminProjectController::class, 'index'])->name('admin.projects');
         Route::get('projects/update/{id}', [AdminProjectController::class, 'update'])->name('projects.update');
         Route::put('projects/edite/{id}', [AdminProjectController::class, 'edite'])->name('projects.edite');
 
-        
+
         Route::put('projects/accept/status/{id}', [AdminProjectController::class, 'acceptStatus'])->name('admin.accept.status');
         Route::put('projects/refuser/status/{id}', [AdminProjectController::class, 'refuserStatus'])->name('admin.refuser.status');
 
-        
-        
+
+
         Route::post('/project/add/worker/{id}', [AdminProjectController::class, 'storeWorker'])->name('project.add.worker');
         Route::delete('project-assignments/{id}', [AdminProjectController::class, 'deleteAssignments'])->name('project.assignments');
-        
-  
-        
-        
-        });
-        
-    Route::middleware('role:client')->group(function (){
+
+
+
+
+    });
+
+    Route::middleware('role:client')->group(function () {
 
         Route::get('client/dashboard', [ClientDashboarController::class, 'index'])->name('client.dashboard');
-        
+
         Route::get('client/projects', [ClientProjectController::class, 'index'])->name('client.projects');
         Route::get('projects/create', [ClientProjectController::class, 'create'])->name('create.projects');
         Route::post('projects/store', [ClientProjectController::class, 'store'])->name('store.projects');
@@ -97,20 +95,20 @@ Route::middleware(['auth'])->group(function () {
 
     });
 
-    Route::middleware('role:architecte')->group(function(){
+    Route::middleware('role:architecte')->group(function () {
         Route::get('architecte/dashboard', [ArchitecteDashboarController::class, 'index'])->name('architecte.dashboard');
 
         Route::get('architecte/projects', [ArchitecteProjectController::class, 'index'])->name('architecte.projects');
 
         Route::get('architecte/projects/details/{id}', [AdminProjectController::class, 'show'])->name('architecte.projects.show');
-        
+
 
     });
 
 
-    Route::middleware('role:admin,architecte')->group(function (){
-    
-          // admin/architecte
+    Route::middleware('role:admin,architecte')->group(function () {
+
+        // admin/architecte
         Route::get('admin/projects/details/{id}', [AdminProjectController::class, 'show'])->name('admin.projects.show');
         Route::get('projects/filter/status/{status}', [AdminProjectController::class, 'filterByStatus'])->name('projects.filter.status');
         Route::post('projects/phases', [PhaseController::class, 'store'])->name('phases.store');
@@ -119,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/project-task-create', [TaskController::class, 'store'])->name('project.task.create');
         Route::put('/project-sprint-update/{id}', [PhaseController::class, 'update'])->name('project.sprint.update');
         Route::delete('/project-sprint-delete/{id}', [PhaseController::class, 'destroy'])->name('project.sprint.delete');
-      
+
         Route::put('/project-task-update', [TaskController::class, 'update'])->name('project.task.update');
         Route::delete('/project-task-delete', [TaskController::class, 'destroy'])->name('project.task.delete');
 

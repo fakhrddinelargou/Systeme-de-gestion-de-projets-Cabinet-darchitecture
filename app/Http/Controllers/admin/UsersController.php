@@ -16,40 +16,42 @@ class UsersController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $direction = 'admin.users.index';
-        $users = DB::table('users')
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->where('users.role_id', '!=', 1)
-            ->select('users.*', 'roles.name as role_name')
-            ->paginate(2)
-            ->withQueryString();
-        $total = User::where('role_id', '!=', 1)->count();
+public function index(Request $request)
+{
+    $direction = 'admin.users.index';
 
-        return view('layout.app', compact('direction', 'users', 'total'));
+    $query = DB::table('users')
+        ->join('roles', 'users.role_id', '=', 'roles.id')
+        ->where('users.role_id', '!=', 1)
+        ->select('users.*', 'roles.name as role_name');
 
+    if ($request->filled('role') && $request->role !== 'all') {
+        $query->where('roles.name', $request->role);
     }
 
-    public function pagination()
-    {
-        $users = DB::table('users')
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->where('users.role_id', '!=', 1)
-            ->select('users.*', 'roles.name as role_name')
-            ->paginate(2)
-            ->withQueryString();
+    if ($request->filled('search')) {
+        $search = $request->search;
 
-        return response()->json([
-            'users' => $users
-        ]);
-
-
+        $query->where(function ($q) use ($search) {
+            $q->where('users.fullname', 'like', "%{$search}%")
+              ->orWhere('users.email', 'like', "%{$search}%");
+        });
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    $users = $query->paginate(5)->withQueryString();
+
+    $total = DB::table('users')
+        ->where('role_id', '!=', 1)
+        ->count();
+
+    if ($request->ajax()) {
+        return response()->json($users);
+    }
+
+    return view('layout.app', compact('direction', 'users', 'total'));
+}
+
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -69,52 +71,6 @@ class UsersController extends Controller
         return back()->with('success', 'User Added successfully');
     }
 
-    public function search(string $name)
-    {
-
-        $users = null;
-        if (!empty($name)) {
-
-            $users = DB::table('users')
-                ->join('roles', 'users.role_id', '=', 'roles.id')
-                ->where('users.role_id', '!=', 1)
-                ->where('users.fullname', 'like', '%' . $name . '%')
-                ->select('users.*', 'roles.name as role_name')
-                ->get();
-
-        }
-        return response()->json([
-            'users' => $users->values()
-        ]);
-    }
-
-
-    // CORRECT (Use Request to grab the query parameters)
-    public function searchByrole(Request $request)
-    {
-        $role = $request->query('role');
-
-        $query = DB::table('users')
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->where('users.role_id', '!=', 1);
-
-        if (!empty($role) && $role !== 'all') {
-            $query->where('roles.name', '=', $role);
-        }
-
-        $users = $query->select('users.*', 'roles.name as role_name')
-            ->paginate(2)
-            ->withQueryString();
-
-        return response()->json([
-            'html' => $users->links()->toHtml(),
-            'data' => $users->items(),
-            'meta' => [
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-            ]
-        ]);
-    }
 
 
 
@@ -123,7 +79,7 @@ class UsersController extends Controller
         $user = User::where('id', $id)
             ->where('role_id', '!=', 1)
             ->first();
-
+            
         if (!$user) {
             return response()->json([
                 'message' => 'User not found or unauthorized.'
@@ -137,8 +93,9 @@ class UsersController extends Controller
 
         return response()->json([
             'message' => "User account has been {$statusText} successfully.",
-            'data' => $user
-        ]);
+            'data' => $user,
+            'old' => $user->is_active
+                    ]);
     }
 
     /**

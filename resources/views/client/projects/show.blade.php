@@ -169,54 +169,6 @@
 
             </div>
 
-            <div class="bg-white mb-5 rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                <!-- Header -->
-                <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-
-                    <h3
-                        class="text-sm font-black uppercase tracking-wider text-slate-700  decoration-slate-700 decoration-2 underline-offset-4">
-                        Ajouter une remarque
-                    </h3>
-
-                    <span class="text-[10px] font-bold text-slate-400">
-                        Votre avis est important
-                    </span>
-                </div>
-
-                <!-- Content -->
-                <div class="p-5 space-y-4">
-                    <!-- Textarea -->
-                    <div>
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            Votre message
-                        </label>
-
-                        <textarea rows="4" placeholder="Écrivez votre remarque ou votre question..."
-                            class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:bg-white transition"></textarea>
-                    </div>
-
-                    <!-- Info -->
-                    <div class="flex items-center justify-between text-xs text-slate-400">
-                        <span>✔ Votre message sera envoyé à l’administration</span>
-                        <span>Réponse rapide</span>
-                    </div>
-
-                    <!-- Button -->
-                    <div class="flex justify-end">
-                        <button class="flex items-center gap-2 rounded-md cursor-poiter bg-gray-600 px-5 py-2.5 text-sm font-bold text-white 
-                       hover:bg-gray-700 transition duration-200 shadow-sm hover:shadow-md">
-                            <!-- icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 10h8m-8 4h6M9 21h6a2 2 0 002-2V7l-5-5H9a2 2 0 00-2 2v15a2 2 0 002 2z" />
-                            </svg>
-
-                            Envoyer
-                        </button>
-                    </div>
-                </div>
-            </div>
            @endif
 
         </div>

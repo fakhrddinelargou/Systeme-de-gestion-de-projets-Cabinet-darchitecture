@@ -1,4 +1,4 @@
-<main class="w-full h-screen lg:w-[82%] ml-auto ">
+<main class="w-full h-auto min-h-screen lg:w-[82%] ml-auto ">
 
     <div class="w-full h-auto  lg:px-15 px-5 pt-10">
         <div class="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -8,12 +8,7 @@
                 <p class="text-sm text-slate-400 font-medium">Control and monitor all platform participants.</p>
             </div>
 
-            <div class="flex gap-3">
-                <button
-                    class="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-md font-bold text-sm hover:bg-slate-50 transition-all shadow-sm">
-                    <span class="material-symbols-outlined text-[20px]">file_download</span>
-                    Export CSV
-                </button>
+            <div>
                 <x-users.add-new-worker>
                     <button @click="open = true"
                         class="flex items-center gap-2 px-5 py-2.5 bg-gray-600 text-white rounded-md font-bold text-sm hover:bg-gray-700 transition-all shadow-lg shadow-gray-300">
@@ -29,7 +24,7 @@
             <div class="relative flex-1 w-full">
                 <span
                     class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                <input id="input_search" type="text" placeholder="Search by name, email or reference..."
+                <input id="input_search" type="text" placeholder="Search by name..."
                     class="w-full pl-12 pr-4 py-3 bg-slate-50 border-none rounded-md text-sm focus:ring-2 focus:ring-gray-500/20 transition-all outline-none text-slate-600 font-medium">
             </div>
 
@@ -47,7 +42,7 @@
             </button>
         </div>
 
-        <div class="bg-white rounded-md shadow-sm border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-md shadow-sm border border-slate-100 overflow-hidden mb-5">
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead>
@@ -74,9 +69,9 @@
                 </table>
             </div>
 
-            <div class="items px-8 py-5 border-t border-slate-100 text-xs font-bold text-slate-400">
-                {{ $users->links() }}
-            </div>
+<div class="items px-8 py-5 border-t border-slate-100 text-xs font-bold text-slate-400">
+    {{ $users->links() }}
+</div>
 
         </div>
     </div>
@@ -84,7 +79,7 @@
 </main>
 
 @include('components.users.block-user')
-<!-- @include('components.users.edit-user-profile') -->
+
 
 
 <script>
@@ -111,7 +106,6 @@
         }
     });
 
-    // Style toggle dial les boutons (Architects/Clients)
     type.forEach(el => {
         el.addEventListener('click', () => {
             type.forEach(item => {
@@ -123,34 +117,11 @@
         });
     });
 
-    // Event Delegation dial l-pagination links
-    document.querySelector('.items').addEventListener('click', function (e) {
-        const link = e.target.closest('a');
-        if (link) {
-            e.preventDefault();
-            const urlObj = new URL(link.href);
-            const page = urlObj.searchParams.get('page');
-            const role = urlObj.searchParams.get('role') ?? 'all';
-            console.log('check role', role);
 
-            filterByRole(role, page);
-        }
-    });
 
-    // 4. Core Functions (Data & Rendering)
-    async function getName(query) {
-        try {
-            const response = await fetch(`/admin/search/${query}`);
-            if (!response.ok) throw new Error(response.status);
-            const data = await response.json();
-            showUSers(data.users);
-        } catch (error) {
-            console.error("Search Error:", error);
-        }
-    }
 
-    async function filterByRole(roleName, pageNumber = 1) {
-        const url = `/users/filter?role=${roleName}&page=${pageNumber}`;
+    async function filterByRole(roleName) {
+        const url = `/admin/users?role=${roleName}`;
         try {
             const response = await fetch(url, {
                 headers: {
@@ -159,17 +130,40 @@
                 }
             });
             const data = await response.json();
-            // Hna t-qder d-dir showUSers(data.data) ila bghiti t-re-render
-            console.log(data.data);
+            showUSers(data.data);
         } catch (error) {
             console.error("Filter Error:", error);
         }
     }
 
+async function getName(query) {
+    console.log(query);
+
+    try {
+        const response = await fetch(`/admin/users?search=${query}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error(response.status);
+
+        const data = await response.json();
+
+        showUSers(data.data); // ✅ صح
+
+        document.querySelector('.items').innerHTML = data.html; // مهم باش pagination تتبدل
+
+    } catch (error) {
+        console.error("Search Error:", error);
+    }
+}
+
     function showUSers(usersList) {
         tbody.innerHTML = '';
 
-        if(usersList.length == 0){
+        if (usersList.length == 0) {
             tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="px-6 py-12 text-center">
@@ -180,7 +174,7 @@
                 </td>
             </tr>
         `;
-        return;
+            return;
         }
 
         usersList.forEach(user => {
@@ -242,18 +236,20 @@
         document.body.style.overflow = 'auto';
     }
 
-    async function handleConfirm() {
+    async function handleConfirm() {        
         if (!userIdToBlock) return;
         try {
             const response = await fetch(`/admin/users/${userIdToBlock}/block`, {
                 method: 'PUT',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-CSRF-TOKEN': csrfToken,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
             });
             const data = await response.json();
+            console.log(data);
+            
             showAlert(data.message);
         } catch (error) {
             console.error("Error:", error);
@@ -333,8 +329,8 @@
                     <div class="relative">
                         <select id="edit-role"
                             class="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-md text-sm font-bold text-slate-700 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer">
-                            <option value="client" ${userData.role_name == 'client' ? 'selected' : '' }>Client</option>
-                            <option value="architecte" ${userData.role_name == 'architecte' ? 'selected' : '' }>Architecte</option>
+                            <option value="client" ${userData.role_name == 'client' ? 'selected' : ''}>Client</option>
+                            <option value="architecte" ${userData.role_name == 'architecte' ? 'selected' : ''}>Architecte</option>
                         </select>
                         <span
                             class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
@@ -364,19 +360,19 @@
     }
 
     async function submitRole(id) {
-         console.log(csrfToken);
-         
+        console.log(csrfToken);
+
         const role = document.getElementById('edit-role').value;
         console.log(role);
-        
+
         const btnRole = document.getElementById('btnRole');
         const url = `/admin/update/users/${id}?role=${role}`;
         const options = {
-            method : 'PUT',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': csrfToken, 
+                'X-CSRF-TOKEN': csrfToken,
             },
 
         };
@@ -386,8 +382,6 @@
             btnRole.innerText = "Updating...";
             btnRole.style.opacity = "0.5";
         }
-
-        // console.log(id, role);
 
         try {
             const response = await fetch(url, options);

@@ -1,4 +1,4 @@
-<div x-data="{ open: false }">
+<!-- <div x-data="{ open: false }">
     
  <div>
     {{ $slot }}
@@ -64,4 +64,4 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->

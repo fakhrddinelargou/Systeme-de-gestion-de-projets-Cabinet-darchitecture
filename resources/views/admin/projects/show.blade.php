@@ -385,15 +385,9 @@
                             class="w-full rounded-md border border-slate-200 px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none"></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Percentage</label>
-                            <input type="number" name="percentage" min="0" max="100" placeholder="0"
-                                class="w-full rounded-md border border-slate-200 px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Statut</label>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 ">Statut</label>
                             <select name="status"
                                 class="w-full rounded-md border border-slate-200 px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300">
                                 <option value="">Sélectionner un statut</option>

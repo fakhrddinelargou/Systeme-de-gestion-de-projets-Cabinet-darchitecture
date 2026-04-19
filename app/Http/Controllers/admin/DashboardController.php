@@ -33,7 +33,7 @@ class DashboardController extends Controller
             )
             ->latest('projects.created_at')
             ->get();
-                                   
+
 
         $last_users_weekly = User::where('created_at', '>=', Carbon::now()->subDays(7))->count();
         $users = DB::table('users')
@@ -49,7 +49,7 @@ class DashboardController extends Controller
             ->where('users.role_id', '!=', 1)
             ->where('users.is_active', true)
             ->latest('users.created_at')
-            ->take(4)
+            ->take(10)
             ->get();
 
         $data = null;

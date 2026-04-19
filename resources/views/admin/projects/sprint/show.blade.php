@@ -147,7 +147,7 @@
     </div>
 </section>
 
-    <!-- form sprint -->
+    <!-- form sprint update -->
     <div id="phaseModal" class=" fixed inset-0 z-50 hidden">
 
         <div class="relative flex items-center justify-center min-h-screen p-4">
@@ -183,12 +183,8 @@
                             class="w-full rounded-md border border-slate-200 px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none">{{ $sprint->description }}</textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Percentage</label>
-                            <input type="number" value="{{ $sprint->percentage }}" name="percentage" min="0" max="100" placeholder="0"
-                                class="w-full rounded-md border border-slate-200 px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300">
-                        </div>
+                    <div class="">
+
 
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Statut</label>
@@ -372,7 +368,7 @@
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const defaultAvatar = "{{ asset('assets/images/gust.jpg') }}";
     const storagePath = "{{ asset('storage') }}/";
-document.getElementById('taskDetails').classList.add('hidden');
+    document.getElementById('taskDetails').classList.add('hidden');
     const pending_task = @js($pending_task);
     const inProgress_task = @js($inProgress_task);
     const completed_task = @js($completed_task);

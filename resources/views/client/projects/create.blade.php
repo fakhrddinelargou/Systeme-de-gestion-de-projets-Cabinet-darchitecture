@@ -165,15 +165,6 @@
                         <input id="end_date" name="end_date" type="date" required
                             class="mt-2 w-full px-4 py-3.5 rounded-lg border border-gray-300 bg-white text-[14px] outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition">
                     </div>
-
-                    <div>
-                        <label for="total_progress"
-                            class="block text-[#9CA3AF] font-bold text-[12px] tracking-[1.8px] uppercase">
-                            Total Progress
-                        </label>
-                        <input required id="total_progress" name="total_progress" type="number" min="0" max="100" placeholder="0"
-                            class="mt-2 w-full px-4 py-3.5 rounded-lg border border-gray-300 bg-white text-[14px] outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition">
-                    </div>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 pt-2">

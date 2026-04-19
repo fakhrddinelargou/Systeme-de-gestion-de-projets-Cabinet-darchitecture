@@ -175,11 +175,13 @@
 
                     <div>
                         <label class="block text-[#9CA3AF] font-bold text-[12px] uppercase">
-                            Total Progress
+                            Status
                         </label>
-                        <input name="total_progress" type="number" min="0" max="100"
-                            value="{{ old('total_progress', $project->total_progress) }}"
-                            class="mt-2 w-full px-4 py-3.5 rounded-lg border border-gray-300">
+                        <select name="status" class="mt-2 w-full px-4 py-3.5 rounded-lg border border-gray-300">
+                            <option value="pending" {{ $project->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="in_progress" {{ $project->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="completed" {{ $project->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                        </select>
                     </div>
                 </div>
 
@@ -188,7 +190,7 @@
                         Update Project
                     </button>
 
-                    <a href="{{ route('admin.projects.show' , $project->id) }}"
+                    <a href="{{ route('admin.projects.show', $project->id) }}"
                         class="px-8 h-12 rounded-lg border border-gray-300 flex items-center justify-center">
                         Cancel
                     </a>

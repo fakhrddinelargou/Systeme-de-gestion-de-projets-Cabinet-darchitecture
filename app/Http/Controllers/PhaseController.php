@@ -28,18 +28,6 @@ class PhaseController extends Controller
         return view('layout.app', compact('direction', 'projects'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $direction = 'project.create';
-
-        return view(
-            'layout.app',
-            compact('direction')
-        );
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -50,7 +38,6 @@ class PhaseController extends Controller
             'project_id' => 'required|integer|exists:projects,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'percentage' => 'integer|min:0|max:100',
             'due_date' => 'required|date|after:today',
         ]);
 
@@ -58,6 +45,27 @@ class PhaseController extends Controller
             return back()->with('error', 'Data Invalid');
         }
         ProjectPhase::create($validate);
+
+        // $sprint = DB::table('project_phases')
+        //     ->where('project_id', '=', $request->project_id)
+        //     ->sum('percentage');
+
+        // if (!$sprint) {
+
+        //     $total_sprint = ProjectPhase::where('project_id', $request->project_id)->count();
+        //     $total_per = $sprint;
+
+        //     $percentage = $total_sprint > 0 ? (int) ($total_per / $total_per) : 0;
+
+        //     ProjectPhase::update([
+        //         'percentage' => $percentage
+        //     ]);
+
+
+        // }
+
+
+
         return back()->with('success', 'Phase created successfully');
     }
 
@@ -70,24 +78,29 @@ class PhaseController extends Controller
         $project_id = $sprint->project->id;
 
         $pending_task = DB::table('tasks')
-                          ->join('users' , 'users.id' , '=' , 'tasks.user_id')
-                          ->where('tasks.status' , '=' , 'pending')
-                          ->select('tasks.*' , 'users.avatar as avatar', 'users.fullname as fullname')
-                        ->get();
-
+            ->leftjoin('users', 'users.id', '=', 'tasks.user_id')
+            ->leftJoin('project_phases', 'project_phases.id', '=', 'tasks.sprint_id')
+            ->where('tasks.sprint_id', '=', $id)
+            ->where('tasks.status', '=', 'pending')
+            ->select('tasks.*', 'users.avatar as avatar', 'users.fullname as fullname')
+            ->get();
 
         $inProgress_task = DB::table('tasks')
-                          ->join('users' , 'users.id' , '=' , 'tasks.user_id')
-                          ->where('tasks.status' , '=' , 'in_progress')
-                          ->select('tasks.*' , 'users.avatar as avatar', 'users.fullname as fullname')
-                            ->get();
-                          
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->leftJoin('project_phases', 'project_phases.id', '=', 'tasks.sprint_id')
+            ->where('tasks.sprint_id', '=', $id)
+            ->where('tasks.status', '=', 'in_progress')
+            ->select('tasks.*', 'users.avatar as avatar', 'users.fullname as fullname')
+            ->get();
+
         $completed_task = DB::table('tasks')
-                          ->join('users' , 'users.id' , '=' , 'tasks.user_id')
-                          ->where('tasks.status' , '=' , 'completed')
-                          ->select('tasks.*' , 'users.avatar as avatar', 'users.fullname as fullname')
-                          ->get();
-                            
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->leftJoin('project_phases', 'project_phases.id', '=', 'tasks.sprint_id')
+            ->where('tasks.sprint_id', '=', $id)
+            ->where('tasks.status', '=', 'completed')
+            ->select('tasks.*', 'users.avatar as avatar', 'users.fullname as fullname')
+            ->get();
+
 
         $total_pending_task = Task::where('sprint_id', $id)
             ->where('status', '=', 'pending')
@@ -100,16 +113,16 @@ class PhaseController extends Controller
         $total_completed_task = Task::where('sprint_id', $id)
             ->where('status', '=', 'completed')
             ->count();
-        
-            $statusCount = [
-                'pending' => $total_pending_task,
-                'inProgress' => $total_inProgress_task,
-                'completed' => $total_completed_task
-            ];
-        
+
+        $statusCount = [
+            'pending' => $total_pending_task,
+            'inProgress' => $total_inProgress_task,
+            'completed' => $total_completed_task
+        ];
+
 
         $direction = 'admin.projects.sprint.show';
-        return view('layout.app', compact('direction', 'sprint', 'project_id', 'pending_task', 'inProgress_task', 'completed_task' , 'statusCount'));
+        return view('layout.app', compact('direction', 'sprint', 'project_id', 'pending_task', 'inProgress_task', 'completed_task', 'statusCount'));
     }
 
     /**
@@ -151,13 +164,14 @@ class PhaseController extends Controller
 
 
 
-    public function destroy(string $id){
+    public function destroy(string $id)
+    {
         $sprint = ProjectPhase::find($id);
-        if(!$sprint){
-            return back()->with('error','Sprint Not Found');
+        if (!$sprint) {
+            return back()->with('error', 'Sprint Not Found');
         }
         $sprint->delete();
-        return back()->with('success','Sprint Deleted Successfully');
+        return back()->with('success', 'Sprint Deleted Successfully');
     }
 
 

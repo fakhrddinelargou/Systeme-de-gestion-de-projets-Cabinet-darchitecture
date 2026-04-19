@@ -322,16 +322,12 @@
                     </div>
 
                     <!-- Screenshot -->
-                    <div class="relative">
-                        <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
+                    <div class=" ">
+                        <div class="rounded-2xl  overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
                             <img src="{{ asset('assets/images/preview-img.png') }}" alt="App preview"
                                 class="w-full h-full object-cover" />
                         </div>
 
-                        <div
-                            class="hidden p-4 lg:block absolute -bottom-6 -left-6 w-18 h-18 rounded-2xl border border-gray-200 bg-gray-100">
-                            <img class="" src="{{ asset('assets/images/logo.png') }}" alt="logo">
-                        </div>
                     </div>
 
                 </div>

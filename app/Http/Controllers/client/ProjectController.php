@@ -46,7 +46,6 @@ class ProjectController extends Controller
             'type' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'total_progress' => 'required|min:0|max:100',
         ]);
 
         Project::create([...$validate, 'client_id' => Auth::id()]);
