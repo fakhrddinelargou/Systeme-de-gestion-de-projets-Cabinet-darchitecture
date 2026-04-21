@@ -57,33 +57,23 @@ class User extends Authenticatable
         ];
     }
 
-
-
-
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
-
 
     public function projects()
     {
         return $this->hasMany(Project::class , 'client_id');
     }
 
-
-    public function messages()
+    public function sendMessages()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class , 'sender_id');
     }
 
-
-    public function notifications()
+        public function receiverMessages()
     {
-        return $this->hasMany(Notification::class);
-    }
-
-    public function comments(){
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Message::class , 'receiver_id');
     }
 }

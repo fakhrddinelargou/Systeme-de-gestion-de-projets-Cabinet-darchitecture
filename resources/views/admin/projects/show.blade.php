@@ -305,19 +305,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- EMAIL -->
-                    <div class="">
-
-                        <div class="mb-6 w-full">
-                            <label for="email">
-                                <p class="text-[#9CA3AF] font-bold text-[12px] tracking-[1.6px]">EMAIL ADDRESS</p>
-                            </label>
-                            <input
-                                class="mt-2  text-[14px] w-full px-4 py-3 rounded-md outline-gray-300 outline-1 focus:outline-gray-400 focus:outline-2 border border-gray-100 duration-100"
-                                name='email' required id='email' type="email" placeholder='Jhon@gmail.com'
-                                autocomplete="new-email">
-                        </div>
-                    </div>
+     
 
                     <!-- ROLE -->
                     <div class="mb-6 w-full">

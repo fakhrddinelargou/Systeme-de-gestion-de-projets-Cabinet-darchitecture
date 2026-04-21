@@ -4,6 +4,8 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Notifications\ArchitecteNotification;
+use App\Notifications\SocialNotifications;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -16,40 +18,40 @@ class UsersController extends Controller
     /**
      * Display a listing of the resource.
      */
-public function index(Request $request)
-{
-    $direction = 'admin.users.index';
+    public function index(Request $request)
+    {
+        $direction = 'admin.users.index';
 
-    $query = DB::table('users')
-        ->join('roles', 'users.role_id', '=', 'roles.id')
-        ->where('users.role_id', '!=', 1)
-        ->select('users.*', 'roles.name as role_name');
+        $query = DB::table('users')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->where('users.role_id', '!=', 1)
+            ->select('users.*', 'roles.name as role_name');
 
-    if ($request->filled('role') && $request->role !== 'all') {
-        $query->where('roles.name', $request->role);
+        if ($request->filled('role') && $request->role !== 'all') {
+            $query->where('roles.name', $request->role);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('users.fullname', 'like', "%{$search}%")
+                    ->orWhere('users.email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->paginate(5)->withQueryString();
+
+        $total = DB::table('users')
+            ->where('role_id', '!=', 1)
+            ->count();
+
+        if ($request->ajax()) {
+            return response()->json($users);
+        }
+
+        return view('layout.app', compact('direction', 'users', 'total'));
     }
-
-    if ($request->filled('search')) {
-        $search = $request->search;
-
-        $query->where(function ($q) use ($search) {
-            $q->where('users.fullname', 'like', "%{$search}%")
-              ->orWhere('users.email', 'like', "%{$search}%");
-        });
-    }
-
-    $users = $query->paginate(5)->withQueryString();
-
-    $total = DB::table('users')
-        ->where('role_id', '!=', 1)
-        ->count();
-
-    if ($request->ajax()) {
-        return response()->json($users);
-    }
-
-    return view('layout.app', compact('direction', 'users', 'total'));
-}
 
 
     public function store(Request $request)
@@ -61,12 +63,14 @@ public function index(Request $request)
             'password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
         ]);
 
-        User::create([
+        $user = User::create([
             'fullname' => $validatedData['fullname'],
             'role_id' => 2,
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);
+
+        $user->notify(new ArchitecteNotification($request->email, $request->password));
 
         return back()->with('success', 'User Added successfully');
     }
@@ -79,7 +83,7 @@ public function index(Request $request)
         $user = User::where('id', $id)
             ->where('role_id', '!=', 1)
             ->first();
-            
+
         if (!$user) {
             return response()->json([
                 'message' => 'User not found or unauthorized.'
@@ -94,8 +98,7 @@ public function index(Request $request)
         return response()->json([
             'message' => "User account has been {$statusText} successfully.",
             'data' => $user,
-            'old' => $user->is_active
-                    ]);
+        ]);
     }
 
     /**
@@ -128,6 +131,15 @@ public function index(Request $request)
         $user->update([
             'role_id' => $role->id
         ]);
+
+        $user->notify(
+            new SocialNotifications(
+                'role_updated',
+                'Your role has been updated.',
+                auth()->user()->fullname,
+                'null'
+            )
+        );
 
         return response()->json([
             'message' => 'Role updated successfully',

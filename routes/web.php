@@ -3,7 +3,9 @@
 use App\Http\Controllers\admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\client\ProjectController as ClientProjectController;
 use App\Http\Controllers\architecte\ProjectController as ArchitecteProjectController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\client\DashboardController as ClientDashboarController;
 use App\Http\Controllers\architecte\DashboardController as ArchitecteDashboarController;
@@ -43,6 +45,7 @@ Route::get('/', function () {
         return redirect()->route($direction);
     }
 
+
     return redirect()->route('login');
 });
 
@@ -51,6 +54,12 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('projects/search/{title}', [AdminProjectController::class, 'search'])->name('projects.search.title');
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
+    
+    Route::get('/chat', [MessageController::class, 'index'])->name('chat');
+    Route::get('/chat/open/{id}', [MessageController::class, 'openChat'])->name('open.chat');
+    Route::post('/send-message', [MessageController::class, 'sendMessage'])->name('send.message');
+
 
     Route::middleware('role:admin')->group(function () {
         Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -75,6 +84,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/project/add/worker/{id}', [AdminProjectController::class, 'storeWorker'])->name('project.add.worker');
         Route::delete('project-assignments/{id}', [AdminProjectController::class, 'deleteAssignments'])->name('project.assignments');
+
 
 
 

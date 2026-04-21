@@ -248,7 +248,6 @@ async function getName(query) {
                 }
             });
             const data = await response.json();
-            console.log(data);
             
             showAlert(data.message);
         } catch (error) {

@@ -29,7 +29,7 @@
             font-family: "Inter", sans-serif;
         }
     </style>
-    <title>Document</title>
+    <title>ArchiTrack</title>
 </head>
 <body class="h-auto" >
 @include('components.alert')

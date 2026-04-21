@@ -10,12 +10,10 @@ class Message extends Model
 
     protected $fillable = [
 
-        'type',
         'sender_id',
         'receiver_id',
-        'project_id',
-        'content',
-        'is_read',
+        'body',
+        'read_at',
         'updated_at'
 
     ];
@@ -23,13 +21,13 @@ class Message extends Model
 
     public function sender()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , 'sender_id');
     }
 
 
     public function receiver()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , 'receiver_id');
     }
 
 

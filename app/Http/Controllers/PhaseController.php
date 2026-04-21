@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\SocialNotifications;
 use Illuminate\Http\Request;
 use App\Models\ProjectPhase;
 use Illuminate\Support\Facades\DB;
 use App\Models\Task;
+use App\Models\User;
+
+use Illuminate\Support\Facades\Notification;
 
 
 class PhaseController extends Controller
@@ -46,23 +50,20 @@ class PhaseController extends Controller
         }
         ProjectPhase::create($validate);
 
-        // $sprint = DB::table('project_phases')
-        //     ->where('project_id', '=', $request->project_id)
-        //     ->sum('percentage');
-
-        // if (!$sprint) {
-
-        //     $total_sprint = ProjectPhase::where('project_id', $request->project_id)->count();
-        //     $total_per = $sprint;
-
-        //     $percentage = $total_sprint > 0 ? (int) ($total_per / $total_per) : 0;
-
-        //     ProjectPhase::update([
-        //         'percentage' => $percentage
-        //     ]);
+        if (auth()->user()->role_id != 1) {
+            $admin = User::where('role_id', '=', 1)->first();
+            $admin->notify(new SocialNotifications('sprint', 'add new sprint', auth()->user()->fullname, $request->project_id));
+        }
+        $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->where('project_assignments.project_id', $request->project_id)
+            ->where('project_assignments.user_id', '!=', auth()->id())
+            ->select('users.*')
+            ->get();
 
 
-        // }
+        Notification::send($users, new SocialNotifications('sprint', 'add new sprint', auth()->user()->fullname, $request->project_id));
+
+
 
 
 
@@ -75,7 +76,9 @@ class PhaseController extends Controller
     public function show(string $id)
     {
         $sprint = ProjectPhase::find($id);
-        $project_id = $sprint->project->id;
+        
+        $project_id = $sprint->project_id;
+
 
         $pending_task = DB::table('tasks')
             ->leftjoin('users', 'users.id', '=', 'tasks.user_id')
@@ -147,17 +150,23 @@ class PhaseController extends Controller
             'due_date' => 'required|date|after:today',
         ]);
 
-        $projectPhase = ProjectPhase::findOrFail($id);
-
-        // $totalOthers = ProjectPhase::where('project_id', $projectPhase->project_id)
-        //     ->where('id', '!=', $id)
-        //     ->sum('percentage');
-
-        // if (($totalOthers + $request->percentage) > 100) {
-        //     return back()->with('error', "L-majmo3 maghadi-ch i-koun s7i7! (Max allowed for this phase: " . (100 - $totalOthers) . "%)");
-        // }
+        $projectPhase = ProjectPhase::find($id);
 
         $projectPhase->update($validate);
+
+        if (auth()->user()->role_id != 1) {
+            $admin = User::where('role_id', '=', 1)->first();
+            $admin->notify(new SocialNotifications('sprint', 'Update sprint', auth()->user()->fullname, $projectPhase->project_id));
+        }
+        $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->where('project_assignments.project_id', $projectPhase->project_id)
+            ->where('project_assignments.user_id', '!=', auth()->id())
+            ->select('users.*')
+            ->get();
+
+        Notification::send($users, new SocialNotifications('sprint', 'Update  sprint', auth()->user()->fullname, $projectPhase->project_id));
+
+
 
         return back()->with('success', 'Phase updated successfully');
     }
@@ -169,8 +178,39 @@ class PhaseController extends Controller
         $sprint = ProjectPhase::find($id);
         if (!$sprint) {
             return back()->with('error', 'Sprint Not Found');
+
         }
+
+        if (auth()->user()->role_id != 1) {
+            $admin = User::where('role_id', '=', 1)->first();
+            $admin->notify(
+                new SocialNotifications(
+                    'sprint',
+                    'A sprint has been deleted.',
+                    auth()->user()->fullname,
+                    'null'
+                )
+            );
+        }
+        $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->where('project_assignments.project_id', $sprint->project_id)
+            ->where('project_assignments.user_id', '!=', auth()->id())
+            ->select('users.*')
+            ->get();
+
+
+        Notification::send($users, new SocialNotifications(
+            'sprint_deleted',
+            'A sprint has been deleted.',
+            auth()->user()->fullname,
+            'null'
+        ));
+
+
+
         $sprint->delete();
+
+
         return back()->with('success', 'Sprint Deleted Successfully');
     }
 

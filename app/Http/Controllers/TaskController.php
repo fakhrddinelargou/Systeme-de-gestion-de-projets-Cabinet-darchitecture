@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\ProjectPhase;
+use App\Models\User;
+use App\Notifications\SocialNotifications;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 class TaskController extends Controller
@@ -45,6 +49,33 @@ class TaskController extends Controller
             'status' => 'pending',
         ]);
 
+        $sprint = $task->sprint;
+
+
+        if (auth()->user()->role_id != 1) {
+            $admin = User::where('role_id', 1)->first();
+
+            if ($admin) {
+                $admin->notify(
+                    new SocialNotifications('task', 'created task', auth()->user()->fullname, $sprint->id)
+                );
+            }
+        }
+
+        $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->join('project_phases', 'project_phases.project_id', '=', 'project_assignments.project_id')
+            ->where('project_phases.id', $sprint->id)
+            ->where('project_assignments.user_id', '!=', auth()->id())
+            ->where('users.role_id', '!=', 1)
+            ->select('users.*')
+            ->distinct()
+            ->get();
+        Notification::send(
+            $users,
+            new SocialNotifications('task', 'created task', auth()->user()->fullname, $sprint->id)
+        );
+
+
         $total_tasks = DB::table('tasks')
             ->where('tasks.sprint_id', '=', $task->sprint_id)
             ->count();
@@ -65,21 +96,7 @@ class TaskController extends Controller
         return back()->with('success', 'Task created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -113,12 +130,46 @@ class TaskController extends Controller
                 ? (int) ($total_tasks_completed * (100 / $total_tasks))
                 : 0;
 
-            $task = Task::findOrFail($request->task_id);
+
+            $task = Task::find($request->task_id);
+
+            $clientId = $task->sprint->project->client->id;
+    
+            $user = User::where('id', $clientId)->first();
+            if ($percentage == 100) {
+                $user->notify(new SocialNotifications('client', 'sprint has been completed', 'System', 'null'));
+            }
 
             $task->sprint->update([
                 'percentage' => $percentage
             ]);
         }
+
+
+        if (auth()->user()->role_id != 1) {
+            $admin = User::where('role_id', 1)->first();
+
+            if ($admin) {
+                $admin->notify(
+                    new SocialNotifications('task', 'Updated task', auth()->user()->fullname, 'null')
+                );
+            }
+        }
+
+
+        $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->join('project_phases', 'project_phases.project_id', '=', 'project_assignments.project_id')
+            ->where('project_phases.id', $request->sprint_id)
+            ->where('project_assignments.user_id', '!=', auth()->id())
+            ->where('users.role_id', '!=', 1)
+            ->select('users.*')
+            ->distinct()
+            ->get();
+
+        Notification::send(
+            $users,
+            new SocialNotifications('task', 'updated task', auth()->user()->fullname, 'null')
+        );
 
         return back()->with('success', 'Update successfully');
     }
@@ -139,12 +190,38 @@ class TaskController extends Controller
             ->where('tasks.status', '=', 'completed')
             ->count();
 
+
         $percentage = $total_tasks > 0 ? (int) ($total_tasks_completed * (100 / $total_tasks)) : 0;
 
 
         $task->sprint->update([
             'percentage' => $percentage
         ]);
+
+        if (auth()->user()->role_id != 1) {
+            $admin = User::where('role_id', 1)->first();
+
+            if ($admin) {
+                $admin->notify(
+                    new SocialNotifications('task', 'Deleted task', auth()->user()->fullname, 'null')
+                );
+            }
+        }
+
+
+        $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->join('project_phases', 'project_phases.project_id', '=', 'project_assignments.project_id')
+            ->where('project_phases.sprint_id', $task->sprint_id)
+            ->where('project_assignments.user_id', '!=', auth()->id())
+            ->where('users.role_id', '!=', 1)
+            ->select('users.*')
+            ->distinct()
+            ->get();
+
+        Notification::send(
+            $users,
+            new SocialNotifications('task', 'Deleted task', auth()->user()->fullname, 'null')
+        );
 
         $task->delete();
     }

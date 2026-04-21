@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\client;
 
 use App\Http\Controllers\Controller;
-use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -42,18 +41,14 @@ class DashboardController extends Controller
             ->latest('created_at')
             ->get();
 
-    $recent_comments = Comment::where('user_id', auth()->id())
-        ->latest('created_at')
-        ->first();
-
+  
         $data = [
             'total_projects' => $total_projects,
             'pending_projects' => $pending_projects,
             'last_projects_weekly' => $last_projects_weekly,
             'active_projects' => $active_projects,
             'completed_projects' => $completed_projects,
-            'projects' => $projects,
-            'recent_comments' => $recent_comments,
+            'projects' => $projects
         ];
         // dd($data);
 

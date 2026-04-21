@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\ProjectAssignment;
-// use App\Models\User;
+use App\Models\User;
 use App\Models\ProjectPhase;
+use App\Notifications\SocialNotifications;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 
 use App\Models\Project;
@@ -22,33 +24,33 @@ class ProjectController extends Controller
 
     public function index()
     {
- $projects = DB::table('projects')
-    ->join('users', 'users.id', '=', 'projects.client_id')
-    ->leftjoin('project_phases', 'projects.id', '=', 'project_phases.project_id')
-    ->select(
-        'users.avatar as avatar',
-        'projects.id as id',
-        'users.fullname as client_name',
-        'projects.reference as reference',
-        'projects.title as title',
-        'projects.status as status',
-        'projects.created_at',
-        DB::raw('SUM(project_phases.percentage) as total_progress'),
-        DB::raw('COUNT(project_phases.id) as total_sprint')
-    )
-    ->groupBy(
-        'users.avatar',
-        'users.fullname',
-        'projects.id',
-        'projects.reference',
-        'projects.title',
-        'projects.status',
-        'projects.created_at'
-    )
-    ->orderBy('projects.created_at', 'desc')
-    ->get();
+        $projects = DB::table('projects')
+            ->join('users', 'users.id', '=', 'projects.client_id')
+            ->leftjoin('project_phases', 'projects.id', '=', 'project_phases.project_id')
+            ->select(
+                'users.avatar as avatar',
+                'projects.id as id',
+                'users.fullname as client_name',
+                'projects.reference as reference',
+                'projects.title as title',
+                'projects.status as status',
+                'projects.created_at',
+                DB::raw('SUM(project_phases.percentage) as total_progress'),
+                DB::raw('COUNT(project_phases.id) as total_sprint')
+            )
+            ->groupBy(
+                'users.avatar',
+                'users.fullname',
+                'projects.id',
+                'projects.reference',
+                'projects.title',
+                'projects.status',
+                'projects.created_at'
+            )
+            ->orderBy('projects.created_at', 'desc')
+            ->get();
 
-//    dd($projects);
+        //    dd($projects);
 
         $direction = 'admin.projects.index';
         return view('layout.app', compact('projects', 'direction'));
@@ -151,12 +153,33 @@ class ProjectController extends Controller
             'role' => $request->role,
         ]);
 
+        $project = Project::where('id', '=', $projectId)->first();
+
+        $user = User::find($request->user_id);
+        $user->notify(
+            new SocialNotifications(
+                'assignment',
+                'You have been added to "' . $project->title . '"',
+                auth()->user()->fullname,
+                $project->id
+            )
+        );
+
         return back()->with('success', 'Worker added successfully.');
     }
 
     public function deleteAssignments(string $id)
     {
         ProjectAssignment::where('user_id', $id)->delete();
+        $user = User::where('id', $id)->first();
+        $user->notify(
+            new SocialNotifications(
+                'assignment',
+                auth()->user()->fullname . ' removed you from the project.',
+                auth()->user()->fullname,
+                'null'
+            )
+        );
         return back()->with('success', 'Worker deleted successfully.');
     }
 
@@ -242,11 +265,29 @@ class ProjectController extends Controller
 
         $project = Project::find($id);
 
+
+
         if (!$project) {
             return back()->with('error', 'Project not found');
         }
 
+
         $project->update($validate);
+        $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
+            ->where('project_assignments.project_id', $project->id)
+            ->where('project_assignments.user_id', '!=', auth()->id())
+            ->select('users.*')
+            ->get();
+
+        Notification::send(
+            $users,
+            new SocialNotifications(
+                'project',
+                'The project has been updated.',
+                auth()->user()->fullname,
+                $id
+            )
+        );
 
         return back()->with('success', 'Update successfully');
     }
@@ -285,11 +326,21 @@ class ProjectController extends Controller
     public function acceptStatus(string $id)
     {
 
-        Project::where('id', $id)
-            ->update([
-                'status' => 'accepted'
-            ]);
+        $project = Project::where('id', $id)->first();
 
+        $project->update([
+            'status' => 'accepted'
+        ]);
+
+        $user = User::where('id', '=', $project->client_id)->first();
+        $user->notify(
+            new SocialNotifications(
+                'project',
+                'Your project has been accepted.',
+                auth()->user()->fullname,
+                $project->id
+            )
+        );
         return back()->with('success', 'Project accepted Successfully');
 
     }
@@ -297,10 +348,20 @@ class ProjectController extends Controller
     public function refuserStatus(string $id)
     {
 
-        Project::where('id', $id)
-            ->update([
-                'status' => 'rejected'
-            ]);
+        $project = Project::where('id', $id)->first();
+        $project->update([
+            'status' => 'rejected'
+        ]);
+
+        $user = User::where('id', '=', $project->client_id)->first();
+        $user->notify(
+            new SocialNotifications(
+                'project',
+                'Your project has been refused.',
+                auth()->user()->fullname,
+                $project->id
+            )
+        );
 
         return back()->with('success', 'Project rejected Successfully');
 

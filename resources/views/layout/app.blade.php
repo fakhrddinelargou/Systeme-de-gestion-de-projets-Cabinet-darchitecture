@@ -29,12 +29,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/css/app.css')
     @vite('resources/js/sidbar.js')
+    @vite('resources/js/echo.js')
     <style>
         body {
             font-family: "Inter", sans-serif;
         }
     </style>
-    <title>Document</title>
+    <title>ArchiTrack</title>
 </head>
 
 <body class="h-auto">

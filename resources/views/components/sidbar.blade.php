@@ -28,12 +28,12 @@
             <span class="material-symbols-outlined text-[18px]!" data-icon="architecture">architecture</span>
             Projects
         </a>
-        <a href="/"
+        <a href="{{ route('chat') }}"
             class=" text-sm flex px-2  py-2  items-center gap-2 font-semibold hover:bg-gray-200/30 duration-200 {{ request()->is('*clients') ? 'text-gray-700 border-l-3 border-gray-700 bg-gray-300/20' : 'text-gray-500'   }}">
             <span class="material-symbols-outlined text-[18px]!" data-icon="app_badging">app_badging</span>
             Message
         </a>
-        <a href="/"
+        <a href="{{ route('notifications') }}"
             class=" text-sm flex px-2  py-2  items-center gap-2 font-semibold hover:bg-gray-200/30 duration-200 {{ request()->is('*clients') ? 'text-gray-700 border-l-3 border-gray-700 bg-gray-300/20' : 'text-gray-500'   }}">
             <span class="material-symbols-outlined text-[18px]!" data-icon="notifications">notifications</span>
             Notification

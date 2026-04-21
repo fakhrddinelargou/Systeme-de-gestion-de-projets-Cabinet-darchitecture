@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use \Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Notifications\SocialNotifications;
+use Illuminate\Support\Facades\Notification;
 
 class ProjectController extends Controller
 {
@@ -50,6 +53,15 @@ class ProjectController extends Controller
 
         Project::create([...$validate, 'client_id' => Auth::id()]);
 
+        $admin = User::where('role_id', '=', 1)->first();
+
+        
+            $admin->notify(new SocialNotifications('project created','A new project request has been submitted.'));
+        
+
+
+
+
         return back()->with('success', 'creation successfully');
 
     }
@@ -73,7 +85,7 @@ class ProjectController extends Controller
             )
             ->first();
 
-            
+
         $direction = 'client.projects.show';
         return view('layout.app', compact('direction', 'project', 'stats', 'phases'));
     }
