@@ -1,3 +1,4 @@
+
 <main class="w-full h-auto min-h-screen lg:w-[82%] ml-auto bg-[#F9FBFC] flex flex-col">
     <header class="h-17.5 bg-white border-b border-slate-100 flex items-center justify-between px-8 sticky top-0 z-10">
         <div>
@@ -24,7 +25,7 @@
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scrollbar">
+            <div class="flex-1 overflow-y-auto custom-scrollbar lg:max-h-[80vh]">
                 <!-- <div class="px-4 py-3 bg-gray-50/50 border-l-4 border-gray-600 cursor-pointer">
                     <div class="flex items-center gap-3">
                         <div class="relative">

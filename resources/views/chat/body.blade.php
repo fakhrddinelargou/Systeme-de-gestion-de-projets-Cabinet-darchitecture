@@ -33,26 +33,30 @@
     </div>
 </div>
 
-<!-- @vite(["resources/js/app.js"]) -->
-<!-- @vite('resources/js/echo.js') -->
 
 
 <script>
+    const contact = @js($chat['messages']);
+    const user_id = @js(auth()->id());
+    const receiver_fullname = @js($chat['receiver']);
+    const receiver_id = @js($chat['receiver_id']);
+  
+    console.log(user_id , 'dsadsad');
+    
+
 
     const chatBody = document.getElementById('chatBody');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const btnSendMessage = document.getElementById('btnSendMessage');
     const contentI = document.getElementById('content');
-    const contact = @js($chat['messages']);
-    const receiver_fullname = @js($chat['receiver']);
-    const user_id = @js(auth()->id());
-    const receiver_id = @js($chat['receiver_id']);
+
+
     displayChat();
-scrollToBottom()
+    scrollToBottom()
 
     function scrollToBottom() {
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
     contentI.addEventListener('input', (e) => {
         let input = e.target.value;
 
@@ -144,8 +148,8 @@ scrollToBottom()
     }
 
 
-    function addMessageToUi(el){
-                    chatBody.innerHTML += `
+    function addMessageToUi(el) {
+        chatBody.innerHTML += `
                                        <div class="flex items-end gap-3 max-w-[75%] ${el.sender_id == user_id ? 'ml-auto' : ''}">
                     <div
                     class=" p-4 rounded-2xl rounded-bl-none ${el.sender_id == user_id ? ' rounded-br-none rounded-bl-2xl! bg-gray-600 font-light shadow-blue-100  text-white' : ' rounded-bl-none  rounded-br-2xl! bg-white border border-slate-100'} shadow-sm text-sm text-slate-600 leading-relaxed">
@@ -154,7 +158,7 @@ scrollToBottom()
                     </div>
                     </div>
             `;
-scrollToBottom()
+        scrollToBottom()
 
     }
     function editTime(time) {

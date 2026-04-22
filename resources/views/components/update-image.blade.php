@@ -1,11 +1,11 @@
-<div x-data="{ open: false }" x-cloak>
+<div  x-data="{ open: false }" x-cloak>
 
     <div>
         {{ $slot }}
     </div>
 
     <div x-show="open" x-transition
-        class="w-full h-screen z-50 fixed flex items-center justify-center bg-black/40 left-0 top-0">
+        class="w-full h-screen z-50 fixed flex items-center justify-center bg-black/40 left-0 top-0 px-4">
 
         <div @click.away="open = false"
             class="w-100 p-8 bg-white rounded-xl shadow-2xl flex flex-col items-center justify-center">

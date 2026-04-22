@@ -1,14 +1,14 @@
 @vite('resources/js/sidbar.js')
 @vite('resources/css/app.css')
 <div id="btn" onclick="handleSidbar(this)"
-    class="z-50 fixed left-5 top-5 duration-300 bg-white w-8 h-8 flex items-center justify-center rounded-full border border-gray-200  lg:hidden">
+    class="z-50 fixed left-5 top-5 duration-300 cursor-pointer bg-white w-10 h-10 flex items-center justify-center rounded-full border border-gray-200  lg:hidden">
     <span class="material-symbols-outlined text-[20px]! " data-icon="menu">menu</span>
 
 </div>
 <aside data-open="false" id="sidbar"
-    class=" flex flex-col w-[48%] lg:w-[18%] lg:left-0 lg:fixed h-screen fixed -left-120 bg-white duration-300 shadow-gray-200 shadow-xl z-50">
+    class=" flex flex-col w-[60%] lg:w-[18%] lg:left-0 lg:fixed h-screen fixed -left-500 bg-white duration-300 shadow-gray-200 shadow-xl z-50">
     <!-- Logo -->
-    <div class="mb-5 flex items-center justify-center h-[10vh]">
+    <div class="mb-5 flex items-center justify-center h-[10vh] border-b border-gray-100">
         <div class='flex items-center justify-center gap-2'>
             <img class='w-6 h-6 lg:w-10 lg:h-10' src="{{ asset('assets/images/logo.png') }}" alt="logo">
             <h4 class='font-bold text-[#515151] text-sm lg:text-xl'>ARCHITRACK</h4>
@@ -62,7 +62,3 @@
 
 </aside>
 
-<script>
-
-
-</script>

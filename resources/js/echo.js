@@ -13,6 +13,14 @@ window.Echo = new Echo({
     enabledTransports: ["ws", "wss"],
 });
 
+
 window.Echo.private(`chat.${user_id}`).listen("MessageSent", (e) => {
     addMessageToUi(e.message);
 });
+
+window.Echo.private(`notification.${user_id}`).listen("DisplayNotification", (e) => {
+    addNotification(e.notification);
+});
+
+    // console.log('hello');
+

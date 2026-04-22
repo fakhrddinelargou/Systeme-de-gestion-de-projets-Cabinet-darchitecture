@@ -1,6 +1,6 @@
 <main class="w-full h-auto min-h-screen lg:w-[82%] ml-auto ">
 
-    <div class="w-full h-auto  lg:px-15 px-5 p-10">
+    <div class="w-full h-auto  lg:py-15 px-5 py-10">
         <div class="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
 
             <div class="">
@@ -17,7 +17,7 @@
 
         </div>
 
-        <div class="w-full  lg:p-8">
+        <div class="w-full  lg:px-8">
 
             <div class="mb-6 flex items-center justify-between">
                 <div class="flex gap-3">
@@ -66,9 +66,9 @@
         </div>
 
         <!-- father -->
-        <div class="mb-5 flex items-center gap-4 lg:p-8 ">
+        <div class="mb-5 flex xl:flex-row flex-col items-start gap-4 lg:px-8 ">
             <!-- chil 1 -->
-            <div class=" w-full  lg:w-sm  bg-white rounded-md border border-slate-100 shadow-sm overflow-hidden">
+            <div class=" w-full  lg:w-[40%]  bg-white rounded-md border border-slate-100 shadow-sm overflow-hidden">
                 <!-- Header -->
                 <div class="p-5 border-b border-slate-100 flex items-center justify-between">
                     <div>
@@ -135,6 +135,13 @@
                 </div>
                 @endif
             </div>
+
+                         <div class="rounded-md bg-white rounded-md border border-slate-100 shadow-sm  p-4 xl:w-[60%]">
+                            <p class="text-sm text-slate-400 mt-1">Description</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600 overflow-y-auto xl:h-[31.7vh] ">
+                                {{ $project->description  }}
+                            </p>
+                        </div>
         </div>
 
         <div class="lg:p-8">
@@ -224,7 +231,7 @@
                                             {{ $sprint->status }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-slate-500">24 Apr, 2026</td>
+                                    <td class="md:px-8 px-4 py-5 text-center md:text-sm text-[px] font-medium text-slate-500">{{ \Carbon\Carbon::parse($sprint->created_at)->format('d M, Y') }}</td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-end gap-2">
                                             

@@ -16,8 +16,8 @@
                     <p class="text-sm text-slate-400 font-medium mt-1">Latest alerts across the platform</p>
                 </div>
 
-                <span class="px-4 py-1.5 rounded-full bg-rose-50 text-rose-500 text-sm font-black">
-                    {{ $unreadNoti }} Unread
+                <span class="flex items-center gap-1  md:px-4 px-2 py-1.5 rounded-full bg-rose-50 text-rose-500 md:text-sm text-[8px] lg:font-black font-semibold">
+                   <span>{{ $unreadNoti }}</span> Unread
                 </span>
             </div>
 
@@ -36,7 +36,7 @@
                         if($type == 'sprint' || $type == 'task'){
                         $url = route('show.sprint', ['id' => $direction]);
                         }elseif($type == 'project'){ 
-                        $url = route('admin.projects.show', ['id' => $direction]);
+                        $url = route(auth()->user()->role->name . '.projects.show', ['id' => $direction]);
                         }else{
                         $url = '#';
                         }
@@ -111,13 +111,11 @@
                             </div>
                         </div>
 
-                        {{-- ACTION --}}
                         <div class="flex items-center gap-3 shrink-0">
-
-                            {{-- MARK AS READ --}}
                             @if($isUnread)
-                                <form method="POST" action="">
+                                <form method="POST" action="{{ route('read.notifications' , $notification->id) }}">
                                     @csrf
+                                    @method('PUT')
                                     <button
                                         class="w-12 h-12 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 transition-all">
                                         <span class="material-symbols-outlined">done</span>

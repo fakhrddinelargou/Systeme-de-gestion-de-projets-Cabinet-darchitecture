@@ -1,4 +1,4 @@
-<main class="w-full lg:w-[82%] ml-auto lg:h-screen h-auto ">
+<main class="w-full lg:w-[82%] ml-auto lg:min-h-screen h-auto ">
     <section class=" w-full h-auto  lg:px-15 px-5 pt-10 ">
         <div class="mb-5">
             <h2 class="text-4xl font-semibold text-gray-700">Dashboard</h2>
@@ -75,13 +75,14 @@
 
         </div>
 
-        <div class="flex  items-start gap-10">
+        <div class="flex xl:flex-row flex-col  items-start xl:gap-10">
 
-            <div class="w-[70%] h-[60vh] bg-white rounded-md shadow-sm border border-slate-100 overflow-hidden">
+            <div
+                class="xl:w-[70%] w-full h-auto mb-10 bg-white rounded-md shadow-sm border border-slate-100 overflow-hidden">
                 <div class="p-6 border-b border-slate-50 flex justify-between items-center">
                     <h3 class="text-xl font-black text-slate-800">Latest Registrations</h3>
                     <a href="{{ route('users') }}"
-                        class="text-sm cursor-pointer font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-md hover:bg-blue-100 transition-all">View
+                        class="md:text-sm text-[8px] cursor-pointer font-bold text-blue-600 md:bg-blue-50 md:px-4 px-0 py-2 rounded-md hover:bg-blue-100 transition-all">View
                         Full List</a>
                 </div>
 
@@ -97,7 +98,7 @@
                                     Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-50">
+                        <tbody class="divide-y divide-slate-50 ">
                             @foreach ($data['users'] as $user)
                                 <tr class="hover:bg-slate-50/80 transition-all group">
                                     <td class="px-8 py-4">
@@ -113,7 +114,8 @@
                                         <span
                                             class="px-3 py-1 text-[10px] font-black uppercase rounded-md border {{ $user->role_name == 'architecte' ? 'bg-gray-50 text-gray-600 border-blue-100' : 'bg-purple-50 text-purple-600 border-purple-100' }} ">{{ $user->role_name }}</span>
                                     </td>
-                                    <td class="px-8 py-5 text-center text-sm font-medium text-slate-500">
+                                    <td
+                                        class="md:px-8 px-4 py-5 text-center md:text-sm text-[8px] font-medium text-slate-500">
                                         {{ \Carbon\Carbon::parse($user->joined_date)->format('M d, Y') }}
                                     </td>
                                     <td class="px-8 py-5 text-right">
@@ -135,32 +137,40 @@
                 </div>
             </div>
 
-            <div class=" max-h-[60vh] overflow-y-auto bg-white rounded-md shadow-sm border border-slate-100 p-8">
+            <div
+                class="w-full xl:w-[30%] mb-5  max-h-[60vh] overflow-y-auto bg-white rounded-md shadow-sm border border-slate-100 p-8">
                 <h3 class="text-xl font-black text-slate-800 mb-6 flex justify-between">
                     Action Required
-                    <span class="bg-red-50 text-red-500 text-[10px]  text-center p-2  my-auto rounded-md">{{ $data['pending_projects'] }} New</span>
+                    <span
+                        class="bg-red-50 text-red-500 text-[10px]  text-center p-2  my-auto rounded-md">{{ $data['pending_projects'] }}
+                        New</span>
                 </h3>
 
-                <div class="space-y-4">
+                <div id="bodyNotifications" class="space-y-4">
 
-                @foreach($data['new_projects'] as $project)
-                    <div
-                        class="flex items-center justify-between p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group">
-                        <div class="flex items-center gap-3">
-                            <img class="w-10 h-10 rounded-full"
-                                src={{ $project->avatar ? asset('storage/' . $project->avatar) : asset('assets/images/gust.jpg') }}  alt="">
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">{{ $project->project_name }}</p>
-                                <p class="text-[10px] text-slate-400">{{ $project->user_name }}</p>
+                    @foreach($data['notifications'] as $notification)
+                        <a href="{{ route('notifications') }}">
+                            <div
+                                class="p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group mb-2">
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[18px]">notifications</span>
+                                    </div>
+
+                                    <div class="flex-1">
+                                        <p class="text-sm font-bold text-slate-800">{{ $notification->data['type'] }}</p>
+                                        <p class="text-[11px] text-slate-500 mt-1">
+                                            {{ $notification->data['data']['message'] }}</p>
+                                        <p class="text-[10px] text-slate-400 mt-2">
+                                            {{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <button
-                            class="bg-white w-8 h-8 flex items-center justify-center rounded-md shadow-sm text-blue-600 hover:bg-blue-600 hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-sm!">visibility</span>
-                        </button>
-                    </div>
-                @endforeach
-                  
+                        </a>
+                    @endforeach
+
                 </div>
             </div>
 
@@ -169,3 +179,58 @@
     </section>
 
 </main>
+
+<script>
+
+    const bodyNotifications = document.getElementById('bodyNotifications');
+    const user_id = @js(auth()->id());
+    function addNotification(notification) {
+
+        console.log(notification);
+
+        bodyNotifications.innerHTML += `
+                            <a href="/notifications">
+                        <div class="p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group mb-2">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">notifications</span>
+                                </div>
+
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold text-slate-800">${notification.data.type}</p>
+                                    <p class="text-[11px] text-slate-500 mt-1">${notification.data.data.message}</p>
+                                    <p class="text-[10px] text-slate-400 mt-2">
+                                        ${fixTime(notification.data.created_at)}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+        `
+    }
+
+    function fixTime(time) {
+        const createdAt = new Date(time);
+        const now = new Date();
+
+        const diffInSeconds = Math.floor((now - createdAt) / 1000);
+
+        let timeAgo;
+
+        if (diffInSeconds < 60) {
+            timeAgo = `${diffInSeconds} seconds ago`;
+        } else if (diffInSeconds < 3600) {
+            const minutes = Math.floor(diffInSeconds / 60);
+            timeAgo = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+        } else if (diffInSeconds < 86400) {
+            const hours = Math.floor(diffInSeconds / 3600);
+            timeAgo = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        } else {
+            const days = Math.floor(diffInSeconds / 86400);
+            timeAgo = `${days} day${days > 1 ? 's' : ''} ago`;
+        }
+
+        console.log(timeAgo);
+    }
+
+</script>

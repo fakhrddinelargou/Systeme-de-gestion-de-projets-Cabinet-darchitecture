@@ -7,6 +7,7 @@ use \Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
+use App\Events\DisplayNotification;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\SocialNotifications;
 use Illuminate\Support\Facades\Notification;
@@ -51,16 +52,15 @@ class ProjectController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        Project::create([...$validate, 'client_id' => Auth::id()]);
+        $project = Project::create([...$validate, 'client_id' => Auth::id()]);
 
         $admin = User::where('role_id', '=', 1)->first();
 
         
-            $admin->notify(new SocialNotifications('project created','A new project request has been submitted.'));
-        
-
-
-
+        $admin->notify(new SocialNotifications('project created','A new project request has been submitted.' , auth()->user()->fullname ,$project->id));
+       $notification = $admin->notifications()->orderBy('created_at', 'desc')->first();
+            
+        broadcast(new DisplayNotification($notification))->toOthers();
 
         return back()->with('success', 'creation successfully');
 

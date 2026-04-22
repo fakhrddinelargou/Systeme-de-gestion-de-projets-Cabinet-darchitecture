@@ -55,7 +55,7 @@
                 </thead>
 
                 <tbody id="tbody_projects" class="divide-y divide-slate-50">
-                    @foreach($projects as $project)
+                    @forelse($projects as $project)
                         <tr class="hover:bg-slate-50/50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex flex-col">
@@ -150,7 +150,33 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+    <td colspan="6" class="px-6 py-12 text-center">
+        
+        <div class="flex flex-col items-center justify-center">
+            
+            <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+
+            <h3 class="text-lg font-semibold text-slate-700">
+                Aucun projet trouvé
+            </h3>
+
+            <p class="text-sm text-slate-400 mt-1">
+                Vous n’avez encore aucun projet assigné.
+            </p>
+
+
+        </div>
+
+    </td>
+</tr>
+                    @endempty
                 </tbody>
             </table>
         </div>

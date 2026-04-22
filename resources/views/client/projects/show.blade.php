@@ -141,13 +141,13 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="rounded-lg bg-slate-50 border border-slate-100 p-4">
                                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Type</p>
-                                <p class="mt-2 text-sm font-bold text-slate-700">Résidentiel</p>
+                                <p class="mt-2 text-sm font-bold text-slate-700">{{ $project->type  }}</p>
                             </div>
 
                             <div class="rounded-lg bg-slate-50 border border-slate-100 p-4">
                                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">date limite
                                 </p>
-                                <p class="mt-2 text-sm font-bold text-slate-700">04 Avril 2026</p>
+                                <p class="mt-2 text-sm font-bold text-slate-700">{{ \Carbon\Carbon::parse($project->end_date)->format('m D, Y') }}</p>
                             </div>
 
 
@@ -156,9 +156,7 @@
                         <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Description</p>
                             <p class="mt-2 text-sm leading-6 text-slate-600">
-                                Demande pour la conception et la réalisation des plans d’une villa moderne avec espace
-                                jardin,
-                                garage et terrasse, selon un style architectural contemporain.
+                                {{ $project->description  }}
                             </p>
                         </div>
                     </div>

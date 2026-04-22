@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('projects/search/{title}', [AdminProjectController::class, 'search'])->name('projects.search.title');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::put('notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('read.notifications');
     
     Route::get('/chat', [MessageController::class, 'index'])->name('chat');
     Route::get('/chat/open/{id}', [MessageController::class, 'openChat'])->name('open.chat');
@@ -99,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('projects/create', [ClientProjectController::class, 'create'])->name('create.projects');
         Route::post('projects/store', [ClientProjectController::class, 'store'])->name('store.projects');
 
-        Route::get('client/projects/details/{id}', [clientProjectController::class, 'show'])->name('client.project.show');
+        Route::get('client/projects/details/{id}', [clientProjectController::class, 'show'])->name('client.projects.show');
 
 
 

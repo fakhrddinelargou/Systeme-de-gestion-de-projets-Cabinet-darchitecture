@@ -27,9 +27,9 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @vite('resources/js/echo.js')
     @vite('resources/css/app.css')
     @vite('resources/js/sidbar.js')
-    @vite('resources/js/echo.js')
     <style>
         body {
             font-family: "Inter", sans-serif;

@@ -21,18 +21,8 @@ class DashboardController extends Controller
         $clients = User::where('role_id', 3)->where('is_active', true)->count();
         $active_projects = Project::where('status', 'in_progress')->count();
         $pending_projects = Project::where('status', 'pending')->count();
-        $new_projects = DB::table('projects')
-            ->join('users', 'users.id', '=', 'projects.client_id')
-            ->where('projects.status', '=', 'pending')
-            ->select(
-                'projects.id as project_id',
-                'users.fullname as user_name',
-                'users.avatar as avatar',
-                'projects.title as project_name',
-                'projects.created_at as created_at',
-            )
-            ->latest('projects.created_at')
-            ->get();
+        $notifications = auth()->user()->unreadNotifications;
+
 
 
         $last_users_weekly = User::where('created_at', '>=', Carbon::now()->subDays(7))->count();
@@ -63,8 +53,7 @@ class DashboardController extends Controller
                 'pending_projects' => $pending_projects,
                 'last_users_weekly' => $last_users_weekly,
                 'users' => $users,
-                'new_projects' => $new_projects
-
+                'notifications' => $notifications
             ];
 
         }

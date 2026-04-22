@@ -9,7 +9,7 @@ window.handleSidbar = (e) => {
     sidbar.dataset.open = status;
 
     sidbar.style.left = status === "true" ? "0" : "";
-    e.style.left = status === "true" ? "49%" : "";
+    e.style.left = status === "true" ? "61%" : "";
 };
 
 // Toggle Setting Button

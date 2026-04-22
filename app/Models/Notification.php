@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class Notification extends Model
+class Notification extends DatabaseNotification
 {
-
+    protected $primaryKey = "id";
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
 
