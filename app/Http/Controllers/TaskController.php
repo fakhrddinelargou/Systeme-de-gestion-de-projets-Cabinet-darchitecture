@@ -2,35 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use App\Models\Task;
-use App\Models\ProjectPhase;
 use App\Models\User;
 use App\Notifications\SocialNotifications;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
-use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -95,8 +75,6 @@ class TaskController extends Controller
 
         return back()->with('success', 'Task created successfully');
     }
-
-
 
     /**
      * Update the specified resource in storage.

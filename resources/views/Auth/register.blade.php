@@ -1,14 +1,6 @@
-<style>
-    .container {
-        background-color: #e5e7eb;
-        background-image: radial-gradient(#000000 0.8px, transparent 0.8px);
-        background-size: 26px 26px;
-    }
-</style>
-
-<section class="container w-full min-h-screen flex items-center justify-center px-4 py-8">
+<section class="bg-[#E5E7EB] w-full min-h-screen flex items-center justify-center px-4 py-8">
     <section
-        class="bg-white w-full max-w-2xl rounded-2xl border border-gray-200 shadow-xl px-6 md:px-10 py-10">
+        class="bg-white w-full max-w-2xl rounded-md border border-gray-200 shadow-xl px-6 md:px-10 py-10">
 
         <!-- Logo -->
         <div class="flex flex-col items-center text-center mb-8">

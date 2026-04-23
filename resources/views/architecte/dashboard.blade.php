@@ -1,6 +1,5 @@
 <main class="w-full lg:w-[82%] ml-auto lg:min-h-screen h-auto">
     <section class="w-full h-auto lg:px-15 px-5 pt-10">
-
         <div class="mb-5">
             <h2 class="text-4xl font-semibold text-gray-700">Architect Dashboard</h2>
             <p class="text-sm text-slate-400 mt-2">Overview of your assigned projects, progress, and recent activity.</p>
@@ -102,15 +101,18 @@
 
                         <tbody class="divide-y divide-slate-50">
                             @foreach ($data['assigned_projects_list'] as $project)
+                        
+
                                 <tr class="hover:bg-slate-50/80 transition-all group">
                                     <td class="px-8 py-4">
                                         <div>
-                                            <p class="text-sm font-bold text-slate-800">{{ $project->title }}</p>
+                                            <p class="text-[12px] font-bold text-slate-800">{{ $project->title }}</p>
                                             <p class="text-[11px] text-slate-400">{{ $project->reference ?? 'No reference' }}</p>
                                         </div>
                                     </td>
 
-                                    <td class="px-8 py-5 text-center text-sm text-slate-500">
+                                    <td class="px-8 py-5 text-center text-[10px] text-slate-500">
+                                        {{ $project->client_fullname }}
                                     </td>
 
                                     <td class="px-8 py-5 text-center">
@@ -118,12 +120,12 @@
                                             {{ $project->status == 'in_progress' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : '' }}
                                             {{ $project->status == 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' : '' }}
                                             {{ $project->status == 'completed' ? 'bg-blue-50 text-blue-600 border-blue-100' : '' }}">
-                                            {{ str_replace('_', ' ', $project->status) }}
+                                            {{ $project->status }}
                                         </span>
                                     </td>
 
                                     <td class="px-8 py-5 text-center">
-                                        <div class="w-full max-w-[120px] mx-auto">
+                                        <div class="w-full max-w-30 mx-auto">
                                             <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                                                 <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $project->total_progress }}%"></div>
                                             </div>
@@ -131,13 +133,13 @@
                                         </div>
                                     </td>
 
-                                    <td class="px-8 py-5 text-center md:text-sm text-[8px] font-medium text-slate-500">
+                                    <td class="px-1 py-5 text-center md:text-[12px] text-[8px] font-medium text-slate-500">
                                         {{ \Carbon\Carbon::parse($project->created_at)->format('M d, Y') }}
                                     </td>
 
                                     <td class="px-8 py-5 text-right">
                                         <a href="{{ route('architecte.projects.show', $project->id) }}"
-                                           class="w-8 h-8 inline-flex items-center justify-center bg-slate-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all">
+                                           class="w-8 h-8 inline-flex items-center justify-center bg-slate-100 text-gray-600 rounded-lg hover:bg-gray-600 hover:text-white transition-all">
                                             <span class="material-symbols-outlined text-[16px]!">visibility</span>
                                         </a>
                                     </td>

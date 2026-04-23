@@ -85,11 +85,11 @@
             </div>
         </div>
 
-        <div class=" border border-slate-200 rounded-md min-h-screen p-6 flex justify-center">
+        <div class=" border border-slate-200 rounded-md min-h-screen p-1 md:p-4 flex justify-center">
         <div class="flex gap-6 overflow-x-auto w-full">
             
             {{-- COLUMN: TODO --}}
-            <div class="w-full min-w-86 ">
+            <div class="w-full min-w-80 ">
                 <div class="bg-slate-100 rounded-md p-4">
     
                     {{-- header --}}
@@ -109,7 +109,7 @@
             </div>
     
             {{-- COLUMN: DOING --}}
-            <div class="w-full min-w-86">
+            <div class="w-full min-w-80">
                 <div class="bg-slate-100 rounded-md p-4">
     
                     <div class="flex justify-between items-center mb-4">
@@ -125,7 +125,7 @@
             </div>
     
             {{-- COLUMN: DONE --}}
-            <div class="w-full min-w-86">
+            <div class="w-full min-w-80">
                 <div class="bg-slate-100 rounded-md p-4">
     
                     <div class="flex justify-between items-center mb-4">
@@ -222,7 +222,7 @@
     </div>
 
     <!-- form task -->
-     <div id="taskModal" class=" fixed flex items-center justify-center inset-0 bg-black/20 z-50 top-0 left-0 hidden">
+     <div id="taskModal" class=" fixed flex  items-center justify-center inset-0 bg-black/20 z-50 top-0 left-0 p-2">
 
      
      <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 mt-6 w-md">
@@ -298,7 +298,7 @@
     </div>
 
     <!-- open task details -->
-     <div id="taskDetails" class="fixed inset-0   bg-black/40 flex items-center justify-center z-50 ">
+     <div id="taskDetails" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-2">
 
     <form  action="{{ route('project.task.update') }}" method="POST" class="bg-white  max-w-6xl rounded-xl shadow-2xl overflow-hidden flex">
    @csrf
@@ -316,7 +316,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-6 text-sm text-gray-500">
+            <div class="flex md:flex-row md:items-center flex-col   gap-6 text-sm text-gray-500">
                 <div>
                     <span class="font-semibold text-gray-700 pr-2 ">Status:</span>
 
@@ -333,7 +333,7 @@
                     <input type="date" id="deadline" name="due_date" class="font-semibold text-gray-700">
                 </div>
 
-                <div class="w-10 h-10 rounded-full  ml-auto border border-gray-200 overflow-hidden" >
+                <div class="w-10 h-10 rounded-full  md:ml-auto border border-gray-200 overflow-hidden" >
                     <img id="avatar-task" src="" alt="avatar">
                 </div>
             </div>
@@ -341,7 +341,7 @@
             {{-- Description --}}
             <div>
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Description</h3>
-                <textarea rows="10" cols="50" id="description" name="description" class="text-gray-700 p-2 resize-none outline-none text-sm leading-relaxed border rounded-md border-gray-200">
+                <textarea rows="10" cols="50" id="description" name="description" class="text-gray-700 md:w-auto w-80 p-2 resize-none outline-none text-sm leading-relaxed border rounded-md border-gray-200">
                 </textarea>
             </div>
 
@@ -381,8 +381,8 @@
     const avatar_task = document.getElementById('avatar-task');
     const task_id = document.getElementById('task_id');
     const sprint_id = document.getElementById('sprint_id');
-
-    console.log(stt[0].innerText);
+    document.getElementById('taskModal').classList.add('hidden')
+    
     
     const status = ['pending' , 'inProgress' , 'completed'];
     for(let i = 0 ; i < status.length ; i++){

@@ -31,7 +31,7 @@
     </style>
     <title>ArchiTrack</title>
 </head>
-<body class="h-auto" >
+<body class="h-auto bg-[#E5E7EB]" >
 @include('components.alert')
 
 @include($direction)

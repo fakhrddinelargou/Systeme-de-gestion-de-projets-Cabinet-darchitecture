@@ -58,16 +58,16 @@
                     @forelse($projects as $project)
                         <tr class="hover:bg-slate-50/50 transition-colors">
                             <td class="px-6 py-4">
-                                <div class="flex flex-col">
+                                <div class="flex flex-col w-40">
                                     <span class="text-sm font-bold text-slate-800">{{ $project->title }}</span>
                                     <span class="text-[11px] text-slate-400 italic">ID: #{{ $project->reference }}</span>
                                 </div>
                             </td>
 
                             <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2  w-45">
                                     <div
-                                        class="w-7 h-7 rounded-full overflow-hidden bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold">
+                                        class="w-7 h-7 rounded-full  overflow-hidden bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold">
                                         <img src={{ $project->avatar ? asset('storage/' . $project->avatar) : asset('assets/images/gust.jpg') }} alt="">
                                     </div>
                                     <span class="text-sm text-slate-600 font-medium">{{ $project->client_name }}</span>

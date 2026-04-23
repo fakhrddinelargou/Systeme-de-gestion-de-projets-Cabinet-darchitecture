@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Events\DisplayNotification;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\SocialNotifications;
-use Illuminate\Support\Facades\Notification;
 
 class ProjectController extends Controller
 {
@@ -56,10 +55,10 @@ class ProjectController extends Controller
 
         $admin = User::where('role_id', '=', 1)->first();
 
-        
-        $admin->notify(new SocialNotifications('project created','A new project request has been submitted.' , auth()->user()->fullname ,$project->id));
-       $notification = $admin->notifications()->orderBy('created_at', 'desc')->first();
-            
+
+        $admin->notify(new SocialNotifications('project created', 'A new project request has been submitted.', auth()->user()->fullname, $project->id));
+        $notification = $admin->notifications()->orderBy('created_at', 'desc')->first();
+
         broadcast(new DisplayNotification($notification))->toOthers();
 
         return back()->with('success', 'creation successfully');
@@ -90,27 +89,4 @@ class ProjectController extends Controller
         return view('layout.app', compact('direction', 'project', 'stats', 'phases'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

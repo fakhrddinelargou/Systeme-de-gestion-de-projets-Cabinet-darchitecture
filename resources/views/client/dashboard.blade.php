@@ -206,60 +206,35 @@ No projects found            </h3>
                     </span>
                 </h3>
 
-                <div class="space-y-4">
 
-                    <a href="{{ route('create.projects') }}"
-                        class="flex items-center justify-between p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-blue-600 text-[20px]">add</span>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Create New Request</p>
-                                <p class="text-[10px] text-slate-400">Submit a new project request</p>
-                            </div>
-                        </div>
-                        <span
-                            class="bg-white w-8 h-8 flex items-center justify-center rounded-md shadow-sm text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-sm!">arrow_forward</span>
-                        </span>
-                    </a>
+                <div id="bodyNotifications" class="space-y-4">
 
-                    <a href="{{ route('client.projects') }}"
-                        class="flex items-center justify-between p-4 bg-slate-50 rounded-md border border-transparent hover:border-emerald-200 transition-all group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-emerald-600 text-[20px]">folder_open</span>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">View My Projects</p>
-                                <p class="text-[10px] text-slate-400">Track all your project requests</p>
-                            </div>
-                        </div>
-                        <span
-                            class="bg-white w-8 h-8 flex items-center justify-center rounded-md shadow-sm text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-sm!">arrow_forward</span>
-                        </span>
-                    </a>
+                    @forelse($data['notifications'] as $notification)
+                        <a href="{{ route('notifications') }}">
+                            <div
+                                class="p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group mb-2">
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[18px]">notifications</span>
+                                    </div>
 
-                    <a href=""
-                        class="flex items-center justify-between p-4 bg-slate-50 rounded-md border border-transparent hover:border-amber-200 transition-all group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-amber-600 text-[20px]">notifications</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-bold text-slate-800">{{ $notification->data['type'] }}</p>
+                                        <p class="text-[11px] text-slate-500 mt-1">
+                                            {{ $notification->data['data']['message'] }}</p>
+                                        <p class="text-[10px] text-slate-400 mt-2">
+                                            {{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Notifications</p>
-                                <p class="text-[10px] text-slate-400">Check latest project updates</p>
-                            </div>
-                        </div>
-                        <span
-                            class="bg-white w-8 h-8 flex items-center justify-center rounded-md shadow-sm text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-sm!">arrow_forward</span>
-                        </span>
-                    </a>
-
-
+                        </a>
+                    @empty
+                     <div class="w-full h-50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-200 text-3xl!">done_all</span>
+                     </div>
+                    @endempty
 
                 </div>
             </div>

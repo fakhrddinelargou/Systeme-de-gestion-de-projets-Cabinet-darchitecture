@@ -8,16 +8,10 @@ use App\Models\ProjectPhase;
 use App\Notifications\SocialNotifications;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
-
 use App\Models\Project;
-// use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-// use Illuminate\Support\Facades\Hash;
-// use Illuminate\Validation\Rules\Password;
-// use function Laravel\Prompts\select;
-
 
 class ProjectController extends Controller
 {
@@ -57,18 +51,12 @@ class ProjectController extends Controller
 
     }
 
-
-
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        // $direction = 'client.projects.create';
-
-        return view(
-            'client.projects.create'
-        );
+        return view('client.projects.create');
     }
 
     /**
@@ -128,59 +116,6 @@ class ProjectController extends Controller
 
         $direction = 'admin.projects.show';
         return view('layout.app', compact('direction', 'sprints', 'total_sprint_completed', 'percentage_global', 'total_sprints', 'project', 'workers', 'project_workers', 'total_workers'));
-    }
-
-    public function storeWorker(Request $request, $projectId)
-    {
-
-
-        $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
-            'role' => ['required', 'string', 'min:2', 'max:50'],
-        ]);
-
-        $exists = ProjectAssignment::where('project_id', $projectId)
-            ->where('user_id', $request->user_id)
-            ->exists();
-
-        if ($exists) {
-            return back()->with('error', 'User already assigned to this project.');
-        }
-
-        ProjectAssignment::create([
-            'project_id' => $projectId,
-            'user_id' => $request->user_id,
-            'role' => $request->role,
-        ]);
-
-        $project = Project::where('id', '=', $projectId)->first();
-
-        $user = User::find($request->user_id);
-        $user->notify(
-            new SocialNotifications(
-                'assignment',
-                'You have been added to "' . $project->title . '"',
-                auth()->user()->fullname,
-                $project->id
-            )
-        );
-
-        return back()->with('success', 'Worker added successfully.');
-    }
-
-    public function deleteAssignments(string $id)
-    {
-        ProjectAssignment::where('user_id', $id)->delete();
-        $user = User::where('id', $id)->first();
-        $user->notify(
-            new SocialNotifications(
-                'assignment',
-                auth()->user()->fullname . ' removed you from the project.',
-                auth()->user()->fullname,
-                'null'
-            )
-        );
-        return back()->with('success', 'Worker deleted successfully.');
     }
 
     public function filterByStatus(string $status)

@@ -1,6 +1,6 @@
-<main class="w-full h-screen lg:w-[82%] ml-auto ">
+<main class="w-full min-h-screen lg:w-[82%] ml-auto  ">
 
-    <div class="w-full h-auto  lg:px-15 px-5 pt-10">
+    <div class="w-full h-auto  lg:px-15 px-5 pt-10 pb-10">
         <div class="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
 
             <div class="">

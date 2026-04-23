@@ -16,6 +16,7 @@ class DashboardController extends Controller
 
         $projects = DB::table('projects')
             ->join('project_assignments', 'project_assignments.project_id', '=', 'projects.id')
+            ->join('users' , 'users.id' , '=' , 'projects.client_id')
             ->where('project_assignments.user_id', auth()->id())
             ->orderByDesc('project_assignments.created_at')
             ->limit(5)
@@ -24,6 +25,7 @@ class DashboardController extends Controller
                 'projects.title',
                 'projects.status',
                 'projects.total_progress',
+                'users.fullname as client_fullname',
                 'projects.created_at'
             )
             ->get();

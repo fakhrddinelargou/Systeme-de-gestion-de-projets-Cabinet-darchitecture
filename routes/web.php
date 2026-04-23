@@ -3,6 +3,9 @@
 use App\Http\Controllers\admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\client\ProjectController as ClientProjectController;
 use App\Http\Controllers\architecte\ProjectController as ArchitecteProjectController;
+use App\Http\Controllers\ProjectAssignmentController;
+use App\Http\Controllers\RoleController;
+
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NotificationController;
@@ -14,8 +17,6 @@ use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\admin\UsersController;
-use App\Models\Project;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Route;
 
 
@@ -56,7 +57,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('projects/search/{title}', [AdminProjectController::class, 'search'])->name('projects.search.title');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::put('notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('read.notifications');
-    
+
     Route::get('/chat', [MessageController::class, 'index'])->name('chat');
     Route::get('/chat/open/{id}', [MessageController::class, 'openChat'])->name('open.chat');
     Route::post('/send-message', [MessageController::class, 'sendMessage'])->name('send.message');
@@ -68,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/users', [UsersController::class, 'index'])->name('users');
         Route::delete('/admin/users/{id}', [UsersController::class, 'destroy'])->name('delete.user');
         Route::post('/admin/add/users', [UsersController::class, 'store'])->name('store.user');
-        Route::put('/admin/update/users/{id}', [UsersController::class, 'updateRole'])->name('user.update.role');
+        Route::put('/admin/update/users/{id}', [RoleController::class, 'assignRole'])->name('user.update.role');
 
         Route::put('/admin/users/{id}/block', [UsersController::class, 'block'])->name('block.user');
         // Route::get('/admin/search', [UsersController::class, 'search'])->name('search.user');
@@ -83,8 +84,8 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-        Route::post('/project/add/worker/{id}', [AdminProjectController::class, 'storeWorker'])->name('project.add.worker');
-        Route::delete('project-assignments/{id}', [AdminProjectController::class, 'deleteAssignments'])->name('project.assignments');
+        Route::post('/project/add/worker/{id}', [ProjectAssignmentController::class, 'storeWorker'])->name('project.add.worker');
+        Route::delete('project-assignments/{id}', [ProjectAssignmentController::class, 'deleteAssignments'])->name('project.assignments');
 
 
 

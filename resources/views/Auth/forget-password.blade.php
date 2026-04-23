@@ -1,5 +1,5 @@
 <section class="flex items-center justify-center min-h-screen bg-gray-200">
-  <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-8">
+  <div class="bg-white w-full max-w-md rounded-md shadow-lg p-8">
 
     <!-- Logo / Title -->
     <div class="text-center mb-6">

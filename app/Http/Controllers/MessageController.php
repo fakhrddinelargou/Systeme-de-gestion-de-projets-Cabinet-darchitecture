@@ -6,9 +6,7 @@ use App\Events\MessageSent;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Policies\ChatPolicy;
 use Illuminate\Support\Facades\DB;
-use function Laravel\Prompts\select;
 
 class MessageController extends Controller
 {
@@ -90,39 +88,8 @@ class MessageController extends Controller
             'body' => $request->body,
         ]);
 
-        broadcast(new MessageSent($message))->toOthers();
+        broadcast(new MessageSent($message))->toOthers;
 
         return response()->json($message);
-    }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

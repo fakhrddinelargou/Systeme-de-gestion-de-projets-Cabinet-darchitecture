@@ -139,7 +139,7 @@
 
             <div
                 class="w-full xl:w-[30%] mb-5  max-h-[60vh] overflow-y-auto bg-white rounded-md shadow-sm border border-slate-100 p-8">
-                <h3 class="text-xl font-black text-slate-800 mb-6 flex justify-between">
+                <h3 class="text-xl font-black text-slate-800 mb-6 flex justify-between ">
                     Action Required
                     <span
                         class="bg-red-50 text-red-500 text-[10px]  text-center p-2  my-auto rounded-md">{{ $data['pending_projects'] }}
@@ -148,7 +148,7 @@
 
                 <div id="bodyNotifications" class="space-y-4">
 
-                    @foreach($data['notifications'] as $notification)
+                    @forelse($data['notifications'] as $notification)
                         <a href="{{ route('notifications') }}">
                             <div
                                 class="p-4 bg-slate-50 rounded-md border border-transparent hover:border-blue-200 transition-all group mb-2">
@@ -169,7 +169,11 @@
                                 </div>
                             </div>
                         </a>
-                    @endforeach
+                    @empty
+                     <div class="w-full h-50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-200 text-3xl!">done_all</span>
+                     </div>
+                    @endempty
 
                 </div>
             </div>
@@ -183,7 +187,6 @@
 <script>
 
     const bodyNotifications = document.getElementById('bodyNotifications');
-    const user_id = @js(auth()->id());
     function addNotification(notification) {
 
         console.log(notification);

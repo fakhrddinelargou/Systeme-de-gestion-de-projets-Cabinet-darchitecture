@@ -24,7 +24,7 @@
             <div class="relative flex-1 w-full">
                 <span
                     class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                <input id="input_search" type="text" placeholder="Search by name..."
+                <input id="input_search" type="text" placeholder="Search by name , email..."
                     class="w-full pl-12 pr-4 py-3 bg-slate-50 border-none rounded-md text-sm focus:ring-2 focus:ring-gray-500/20 transition-all outline-none text-slate-600 font-medium">
             </div>
 
@@ -37,9 +37,9 @@
                     class="type px-6 py-2 text-slate-500  cursor-pointer  text-xs font-black uppercase tracking-wider hover:text-slate-800 transition-all">Clients</button>
             </div>
 
-            <button class="p-1.5 px-2 bg-slate-50 text-slate-400 rounded-md hover:text-gray-600 transition-all">
+            <div class="p-1.5 px-2 hidden md:inline-block bg-slate-50 text-slate-400 rounded-md hover:text-gray-600 transition-all">
                 <span class="material-symbols-outlined">filter_list</span>
-            </button>
+            </div>
         </div>
 
         <div class="bg-white rounded-md shadow-sm border border-slate-100 overflow-hidden mb-5">
@@ -183,7 +183,7 @@ async function getName(query) {
             <tr class="hover:bg-slate-50/50 transition-all group">
                 <td class="px-8 py-6">
                     <div class="flex items-center gap-4">
-                        <div class="relative">
+                        <div class="relative hidden lg:block">
                             <img class="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-md" src="${userAvatar}" alt="avatar">
                             <div class="absolute -top-1 -right-1 w-4 h-4 ${user.is_active ? 'bg-emerald-500' : 'bg-gray-300'} border-2 border-white rounded-full"></div>
                         </div>
@@ -206,11 +206,11 @@ async function getName(query) {
                     <p class="text-sm font-bold text-slate-600 tracking-tight text-tabular-nums">${cenvertTime(user.created_at)}</p>
                 </td>
                 <td class="px-8 py-6 text-right">
-                    <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <div class="flex justify-end gap-2 xl:opacity-0 group-hover:opacity-100 transition-all duration-300">
                         <button onclick="openEditModal(${user.id})" title="Edit" class="w-10 h-10 flex items-center justify-center bg-white text-slate-500 rounded-xl border border-slate-100 hover:bg-gray-600 hover:text-white transition-all shadow-sm">
                             <span class="material-symbols-outlined text-[18px]">edit_note</span>
                         </button>
-                        <button title="Block" onclick="openConfirmModal(${user.id})" class="w-10 h-10 flex items-center justify-center cursor-pointer bg-white rounded-xl border border-slate-100 transition-all shadow-sm ${user.is_active ? 'text-red-400' : 'text-green-400'}">
+                        <button title="${user.is_active ? 'Block' : 'Unblock'}" onclick="openConfirmModal(${user.id})" class="w-10 h-10 flex items-center justify-center cursor-pointer bg-white rounded-xl border border-slate-100 transition-all shadow-sm ${user.is_active ? 'text-red-400' : 'text-green-400'}">
                             <span class="material-symbols-outlined text-[18px]">${user.is_active ? 'block' : 'sync'}</span>
                         </button>
                     </div>
@@ -300,7 +300,7 @@ async function getName(query) {
 
         const cardUser = `
              <div id="edit-user-modal"
-        class="fixed inset-0  bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-110 ">
+        class="fixed inset-0  bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-110 p-2">
         <div class="bg-white w-full max-w-sm rounded-md shadow-2xl p-0 overflow-hidden border border-slate-100">
 
             <div class="bg-slate-50 px-8 py-10 flex flex-col items-center border-b border-slate-100">

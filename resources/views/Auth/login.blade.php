@@ -17,7 +17,7 @@ for Architecture</p>
 
         <!-- Content -->
         <section
-            class=" lg:max-w-[60%] bg-[#F3F4F6] w-full h-auto min-h-screen   py-4  px-4 flex flex-col items-center justify-center ">
+            class=" lg:max-w-[60%] bg-[#E5E7EB] w-full h-auto min-h-screen   py-4  px-4 flex flex-col items-center justify-center ">
             <section
                 class="bg-white  flex flex-col items-center h-auto lg:w-md w-full rounded-md border border-gray-100 shadow-md/5 px-10 py-16">
 

@@ -1,7 +1,7 @@
 <main class="w-full h-auto min-h-screen lg:w-[82%] ml-auto ">
 
-    <div class="w-full h-auto  lg:py-15 px-5 py-10">
-        <div class="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class=" w-full h-auto  lg:px-15 px-5 pt-10 py-10 ">
+        <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
 
             <div class="">
                 <h2 class="text-4xl font-semibold text-gray-700">Projects Details</h2>
@@ -20,12 +20,9 @@
         <div class="w-full  lg:px-8">
 
             <div class="mb-6 flex items-center justify-between">
-                <div class="flex gap-3">
+                <div >
                     <a href="{{ route('projects.update' ,$project->id) }}"
                         class="px-4 py-2 bg-white border border-gray-200 rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">Modifier</a>
-                    <button
-                        class="px-4 py-2 bg-gray-600 rounded-md text-sm font-semibold text-white hover:bg-gray-700 shadow-sm transition">Action
-                        Rapide</button>
                 </div>
             </div>
 
@@ -136,9 +133,9 @@
                 @endif
             </div>
 
-                         <div class="rounded-md bg-white rounded-md border border-slate-100 shadow-sm  p-4 xl:w-[60%]">
+                         <div class="rounded-md w-full bg-white border border-slate-100 shadow-sm  p-4 xl:w-[60%]">
                             <p class="text-sm text-slate-400 mt-1">Description</p>
-                            <p class="mt-2 text-sm leading-6 text-slate-600 overflow-y-auto xl:h-[31.7vh] ">
+                            <p class="mt-2 text-sm leading-6 text-slate-600 overflow-y-auto xl:h-[31.7vh] custom-scrollbar">
                                 {{ $project->description  }}
                             </p>
                         </div>
@@ -204,7 +201,7 @@
                             @forelse($sprints as $sprint)
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="px-6 py-4">
-                                        <p class="font-semibold text-slate-800">{{ $sprint->title }}</p>
+                                        <p class="font-semibold text-slate-800 text-[12px] w-50">{{ $sprint->title }}</p>
                                     </td>
 
                                     <td class="px-6 py-4">
@@ -212,8 +209,8 @@
                                             <div class="flex items-center justify-between mb-1">
                                                 <span class="text-slate-700 font-medium">{{ $sprint->percentage }}%</span>
                                             </div>
-                                            <div class="w-full bg-slate-200 rounded-full h-2.5">
-                                                <div class="bg-blue-500 h-2.5 rounded-full"
+                                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full"
                                                     style="width: {{ $sprint->percentage }}%;"></div>
                                             </div>
                                         </div>
@@ -231,7 +228,7 @@
                                             {{ $sprint->status }}
                                         </span>
                                     </td>
-                                    <td class="md:px-8 px-4 py-5 text-center md:text-sm text-[px] font-medium text-slate-500">{{ \Carbon\Carbon::parse($sprint->created_at)->format('d M, Y') }}</td>
+                                    <td class="md:px-8 px-4 py-5 text-center md:text-sm  font-medium text-slate-500 ">{{ \Carbon\Carbon::parse($sprint->created_at)->format('d M, Y') }}</td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-end gap-2">
                                             
