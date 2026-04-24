@@ -53,7 +53,7 @@ php artisan serve
 
 ## 📸 Aperçu
 
-![page](./preview.app.png)
+[](./preview.app.png)
 
 ---
 
