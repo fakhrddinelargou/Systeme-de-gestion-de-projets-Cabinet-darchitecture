@@ -1,6 +1,6 @@
     @if(session('success'))
         <div id="alert"
-            class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md flex items-center gap-4 p-4 bg-emerald-50 border border-emerald-100 rounded-md shadow-2xl shadow-emerald-200/50 animate-in fade-in slide-in-from-top-8 duration-500">
+            class="fixed top-5 left-1/2 -translate-x-1/2  z-500 w-full max-w-[90%] md:max-w-md flex items-center gap-4 p-4 bg-emerald-50 border border-emerald-100 rounded-md shadow-2xl shadow-emerald-200/50 animate-in fade-in slide-in-from-top-8 duration-500">
 
             <div
                 class="w-10 h-10 bg-emerald-500 rounded-md flex items-center justify-center text-white shadow-lg shadow-emerald-200">

@@ -127,9 +127,9 @@
                                     <td class="px-8 py-5 text-center">
                                         <div class="w-full max-w-30 mx-auto">
                                             <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $project->total_progress }}%"></div>
+                                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $project->percentage }}%"></div>
                                             </div>
-                                            <p class="text-[11px] text-slate-500 mt-1">{{ $project->total_progress }}%</p>
+                                            <p class="text-[11px] text-slate-500 mt-1">{{ number_format($project->percentage , 2) }}%</p>
                                         </div>
                                     </td>
 

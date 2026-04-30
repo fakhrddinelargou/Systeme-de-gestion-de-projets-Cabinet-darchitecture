@@ -54,38 +54,37 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('projects/search/{title}', [AdminProjectController::class, 'search'])->name('projects.search.title');
-    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
-    Route::put('notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('read.notifications');
-
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::put('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('read.notifications');
     Route::get('/chat', [MessageController::class, 'index'])->name('chat');
     Route::get('/chat/open/{id}', [MessageController::class, 'openChat'])->name('open.chat');
     Route::post('/send-message', [MessageController::class, 'sendMessage'])->name('send.message');
 
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/projects/search/{title}', [AdminProjectController::class, 'search'])->name('projects.search.title');
         Route::get('/admin/users', [UsersController::class, 'index'])->name('users');
         Route::delete('/admin/users/{id}', [UsersController::class, 'destroy'])->name('delete.user');
         Route::post('/admin/add/users', [UsersController::class, 'store'])->name('store.user');
         Route::put('/admin/update/users/{id}', [RoleController::class, 'assignRole'])->name('user.update.role');
+        Route::get('/projects/filter/status/{status}', [AdminProjectController::class, 'filterByStatus'])->name('projects.filter.status');
 
         Route::put('/admin/users/{id}/block', [UsersController::class, 'block'])->name('block.user');
         // Route::get('/admin/search', [UsersController::class, 'search'])->name('search.user');
 
-        Route::get('admin/projects', [AdminProjectController::class, 'index'])->name('admin.projects');
-        Route::get('projects/update/{id}', [AdminProjectController::class, 'update'])->name('projects.update');
-        Route::put('projects/edite/{id}', [AdminProjectController::class, 'edite'])->name('projects.edite');
+        Route::get('/admin/projects', [AdminProjectController::class, 'index'])->name('admin.projects');
+        Route::get('/projects/update/{id}', [AdminProjectController::class, 'update'])->name('projects.update');
+        Route::put('/projects/edite/{id}', [AdminProjectController::class, 'edite'])->name('projects.edite');
 
 
-        Route::put('projects/accept/status/{id}', [AdminProjectController::class, 'acceptStatus'])->name('admin.accept.status');
-        Route::put('projects/refuser/status/{id}', [AdminProjectController::class, 'refuserStatus'])->name('admin.refuser.status');
+        Route::put('/projects/accept/status/{id}', [AdminProjectController::class, 'acceptStatus'])->name('admin.accept.status');
+        Route::put('/projects/refuser/status/{id}', [AdminProjectController::class, 'refuserStatus'])->name('admin.refuser.status');
 
 
 
         Route::post('/project/add/worker/{id}', [ProjectAssignmentController::class, 'storeWorker'])->name('project.add.worker');
-        Route::delete('project-assignments/{id}', [ProjectAssignmentController::class, 'deleteAssignments'])->name('project.assignments');
+        Route::delete('/project-assignments/{id}', [ProjectAssignmentController::class, 'deleteAssignments'])->name('project.assignments');
 
 
 
@@ -95,25 +94,27 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware('role:client')->group(function () {
 
-        Route::get('client/dashboard', [ClientDashboarController::class, 'index'])->name('client.dashboard');
+        Route::get('/client/dashboard', [ClientDashboarController::class, 'index'])->name('client.dashboard');
+    Route::get('/client/projects/search/{title}', [ClientProjectController::class, 'search'])->name('projects.search.title');
+        Route::get('/client/projects', [ClientProjectController::class, 'index'])->name('client.projects');
+        Route::get('/projects/create', [ClientProjectController::class, 'create'])->name('create.projects');
+        Route::post('/projects/store', [ClientProjectController::class, 'store'])->name('store.projects');
 
-        Route::get('client/projects', [ClientProjectController::class, 'index'])->name('client.projects');
-        Route::get('projects/create', [ClientProjectController::class, 'create'])->name('create.projects');
-        Route::post('projects/store', [ClientProjectController::class, 'store'])->name('store.projects');
-
-        Route::get('client/projects/details/{id}', [clientProjectController::class, 'show'])->name('client.projects.show');
+        Route::get('/client/projects/details/{id}', [clientProjectController::class, 'show'])->name('client.projects.show');
 
 
 
     });
 
     Route::middleware('role:architecte')->group(function () {
-        Route::get('architecte/dashboard', [ArchitecteDashboarController::class, 'index'])->name('architecte.dashboard');
+        Route::get('/architecte/dashboard', [ArchitecteDashboarController::class, 'index'])->name('architecte.dashboard');
 
-        Route::get('architecte/projects', [ArchitecteProjectController::class, 'index'])->name('architecte.projects');
-
-        Route::get('architecte/projects/details/{id}', [AdminProjectController::class, 'show'])->name('architecte.projects.show');
-
+        Route::get('/architecte/projects', [ArchitecteProjectController::class, 'index'])->name('architecte.projects');
+        Route::get('/architecte/projects/filter/status/{status}', [ArchitecteProjectController::class, 'filterByStatus'])->name('projects.filter.status');
+        
+        Route::get('/architecte/projects/details/{id}', [AdminProjectController::class, 'show'])->name('architecte.projects.show');
+        Route::get('/architecte/projects/search/{title}', [ArchitecteProjectController::class, 'search'])->name('architecte.projects.show');
+       
 
     });
 
@@ -121,9 +122,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:admin,architecte')->group(function () {
 
         // admin/architecte
-        Route::get('admin/projects/details/{id}', [AdminProjectController::class, 'show'])->name('admin.projects.show');
-        Route::get('projects/filter/status/{status}', [AdminProjectController::class, 'filterByStatus'])->name('projects.filter.status');
-        Route::post('projects/phases', [PhaseController::class, 'store'])->name('phases.store');
+        Route::get('/admin/projects/details/{id}', [AdminProjectController::class, 'show'])->name('admin.projects.show');
+        Route::post('/projects/phases', [PhaseController::class, 'store'])->name('phases.store');
         Route::get('/show-sprint/{id}', [PhaseController::class, 'show'])->name('show.sprint');
         Route::post('/project-sprint', [PhaseController::class, 'store'])->name('project.sprint.create');
         Route::post('/project-task-create', [TaskController::class, 'store'])->name('project.task.create');

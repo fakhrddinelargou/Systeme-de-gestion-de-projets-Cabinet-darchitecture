@@ -1,6 +1,6 @@
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
-import { addMessageToUi } from "./chat";
+
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
@@ -13,15 +13,31 @@ window.Echo = new Echo({
     enabledTransports: ["ws", "wss"],
 });
 
-let count = 0
-window.Echo.private(`chat.${user_id}`).listen("MessageSent", (e) => {
-        addMessageToUi(e);
-        count++
-        console.log(count);
-        
-    // showToast(e.title,e.sender,e.body,e.id)
-});
 
+if (!window.chatListenerStarted) {
+    window.chatListenerStarted = true;
+
+    window.Echo.private(`chat.${user_id}`)
+        .stopListening("MessageSent")
+        .listen("MessageSent", (e) => {
+            const message = e.message ?? e;
+
+            if (message.sender_id == user_id) return;
+
+            if (typeof window.addMessageToUi === 'function') {
+                window.addMessageToUi(message);
+            }
+
+            if (typeof window.showToast === 'function') {
+                window.showToast(
+                    'Nouveau message',
+                    message.sender ?? 'Utilisateur',
+                    message.body ?? '',
+                    message.id
+                );
+            }
+        });
+}
 window.Echo.private(`notification.${user_id}`).listen("DisplayNotification", (e) => {
     addNotification(e.notification);
 });

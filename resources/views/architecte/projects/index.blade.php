@@ -26,7 +26,6 @@
                     <option value="pending">Pending</option>
                     <option value="in_progress">In Progress</option>
                     <option value="complated">complated</option>
-                    <option value="archived">archived</option>
                 </select>
 
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
@@ -77,12 +76,12 @@
                             <td class="px-6 py-4 w-1/4">
                                 <div class="flex flex-col gap-1.5">
                                     <div class="flex justify-between text-[10px] font-bold text-slate-500">
-                                        <span>{{ $project->total_progress }}%</span>
+                                        <span>{{ number_format($project->total_percentage , 2) }}%</span>
                                         <span>Phase villa</span>
                                     </div>
                                     <div class="w-full bg-slate-100 rounded-full h-1.5">
                                         <div class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500"
-                                            style="width: {{ $project->total_progress }}%"></div>
+                                            style="width: {{ $project->total_percentage }}%"></div>
                                     </div>
                                 </div>
                             </td>
@@ -187,86 +186,104 @@
 </main>
 
 <script>
-    const filter = document.getElementById('filter');
-    const status_dispo = ['all', 'in_progress', 'pending', 'complated', 'archived'];
-    const tbody_projects = document.getElementById('tbody_projects');
-    const input_search = document.getElementById('input_search');
+const filter = document.getElementById('filter');
+const tbody_projects = document.getElementById('tbody_projects');
+const input_search = document.getElementById('input_search');
 
-    filter.addEventListener('change', (e) => {
-        let status = e.target.value;
-        let checkStatus = false;
-        for (let i = 0; i < status_dispo.length; i++) {
-            if (status_dispo[i] == status) {
-                checkStatus = true;
+filter.addEventListener('change', () => {
+    input_search.value = '';
+    filterByStatus(filter.value);
+});
+
+input_search.addEventListener('input', (e) => {
+    filter.value = 'all';
+    filterByTitle(e.target.value.trim());
+});
+
+async function filterByStatus(status) {
+    try {
+        const url = `/architecte/projects/filter/status/${status}`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
             }
-        }
-        console.log(checkStatus);
+        });
 
-        if (checkStatus) {
-            filterByStatus(status);
-        }
-    })
+        if (!response.ok) throw new Error('Failed to fetch projects');
 
-    input_search.addEventListener('input', (e) => {
-        let title = e.target.value;
-
-        filterByTitle(title);
-
-    })
-
-    async function filterByStatus(status) {
-        const url = `projects/filter/status/${status}`;
-        const response = await fetch(url);
         const data = await response.json();
-        displayProjects(data.projects)
+        displayProjects(data.projects);
+
+    } catch (e) {
+        console.log('error:', e);
+    }
+}
+
+async function filterByTitle(title) {
+    if (title.length === 0) {
+        filterByStatus('all');
+        return;
     }
 
-    async function filterByTitle(title) {
+    try {
+        const url = `/architecte/projects/search/${encodeURIComponent(title)}`;
 
-        if (title == '') {
-            filterByStatus('all')
-        }
-        const url = `projects/search/${title}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch projects');
+
         const data = await response.json();
+        displayProjects(data.projects);
 
-        displayProjects(data.projects)
+    } catch (e) {
+        console.log('error:', e);
+    }
+}
 
+function displayProjects(data) {
+    const defaultAvatar = "/assets/images/gust.jpg";
+
+    const statusClasses = {
+        pending: 'bg-amber-50 text-amber-600',
+        accepted: 'bg-blue-50 text-blue-600',
+        rejected: 'bg-red-50 text-red-600',
+        in_progress: 'bg-indigo-50 text-indigo-600',
+        completed: 'bg-emerald-50 text-emerald-600',
+        archived: 'bg-slate-100 text-slate-500',
+    };
+
+    if (!data || data.length === 0) {
+        isEmpty();
+        return;
     }
 
+    tbody_projects.innerHTML = '';
 
-    function displayProjects(data) {
+    data.forEach(el => {
+        const currentClass = statusClasses[el.status] || 'bg-slate-50 text-slate-600';
+        const progress = Number(el.total_progress ?? el.total_percentage ?? 0).toFixed(0);
 
-        const defaultAvatar = "/assets/images/gust.jpg";
-        const statusClasses = {
-            'in_progress': 'bg-blue-50 text-blue-600',
-            'completed': 'bg-emerald-50 text-emerald-600',
-            'pending': 'bg-amber-50 text-amber-600',
-            'archived': 'bg-slate-100 text-slate-500',
-        };
-
-        if (data.length == 0) {
-            isEmpty()
-            return;
-        }
-
-        tbody_projects.innerHTML = '';
-
-        data.forEach(el => {
-            const currentClass = statusClasses[el.status] || 'bg-slate-50 text-slate-600';
-
-            tbody_projects.innerHTML += `
+        tbody_projects.innerHTML += `
         <tr class="hover:bg-slate-50/50 transition-colors">
             <td class="px-6 py-4">
                 <div class="flex flex-col">
                     <span class="text-sm font-bold text-slate-800">${el.title}</span>
-                    <span class="text-[11px] text-slate-400 italic">ID: ${el.reference}</span>
+                    <span class="text-[11px] text-slate-400 italic">ID: #${el.reference}</span>
                 </div>
             </td>
 
             <td class="px-6 py-4">
                 <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full overflow-hidden bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold">
+                    <div class="w-7 h-7 rounded-full overflow-hidden bg-indigo-100">
                         <img src="${el.avatar ? '/storage/' + el.avatar : defaultAvatar}" alt="">
                     </div>
                     <span class="text-sm text-slate-600 font-medium">${el.client_name}</span>
@@ -276,58 +293,43 @@
             <td class="px-6 py-4 w-1/4">
                 <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between text-[10px] font-bold text-slate-500">
-                        <span>${el.total_progress}%</span>
+                        <span>${progress}%</span>
                         <span>Phase villa</span>
                     </div>
                     <div class="w-full bg-slate-100 rounded-full h-1.5">
                         <div class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500"
-                             style="width: ${el.total_progress}%"></div>
+                             style="width: ${progress}%"></div>
                     </div>
                 </div>
             </td>
 
             <td class="px-6 py-4">
                 <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-md ${currentClass}">
-                    ${el.status.replace('_', ' ')}
+                    ${el.status.replaceAll('_', ' ')}
                 </span>
             </td>
 
             <td class="px-6 py-4 text-right">
-                <div class="flex justify-end gap-2">
-                    <a href="projects/details/${el.id}" title="show details"
-                            class="p-1.5 cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                        </svg>
-                    </a>
-                </div>
+                <a href="/architecte/projects/${el.id}" 
+                   class="p-1.5 cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+                    Details
+                </a>
             </td>
         </tr>`;
-        });
-    }
+    });
+}
 
-    function isEmpty(title) {
-        tbody_projects.innerHTML = `
-<tr>
-    <td colspan="5" class="py-24">
-        <div class="flex flex-col items-center justify-center text-center">
-            <div class="mb-4 p-4 bg-slate-50 rounded-full border border-slate-100">
-                <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            
-            <h3 class="text-sm font-black uppercase tracking-widest text-slate-800">Projet introuvable</h3>
-            <p class="text-xs text-slate-400 mt-2 max-w-xs leading-relaxed">
+function isEmpty() {
+    tbody_projects.innerHTML = `
+    <tr>
+        <td colspan="5" class="py-24 text-center">
+            <h3 class="text-sm font-black uppercase tracking-widest text-slate-800">
+                Projet introuvable
+            </h3>
+            <p class="text-xs text-slate-400 mt-2">
                 Vérifiez l'orthographe ou essayez un autre mot-clé.
             </p>
-
-        </div>
-    </td>
-</tr>
-        `
-    }
-
-
+        </td>
+    </tr>`;
+}
 </script>

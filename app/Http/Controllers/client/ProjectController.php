@@ -19,6 +19,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::where('client_id', auth()->id())
+            ->where('status', '!=', 'archived')
             ->get();
         $direction = 'client.projects.index';
         return view('layout.app', compact('direction', 'projects'));
@@ -71,7 +72,7 @@ class ProjectController extends Controller
     public function show(string $id)
     {
         $project = Project::find($id);
-        $phases = DB::table('project_phases')
+        $phase = DB::table('project_phases')
             ->where('project_id', $id)
             ->latest('created_at')
             ->first();
@@ -86,7 +87,40 @@ class ProjectController extends Controller
 
 
         $direction = 'client.projects.show';
-        return view('layout.app', compact('direction', 'project', 'stats', 'phases'));
+        return view('layout.app', compact('direction', 'project', 'stats', 'phase'));
+    }
+
+    public function search(string $title)
+    {
+
+        $projects = DB::table('projects')
+            ->join('users', 'users.id', '=', 'projects.client_id')
+            ->join('project_phases', 'project_phases.project_id', '=', 'projects.id')
+            ->where('users.id' , auth()->id())
+            ->where('projects.title', 'like', '%' . $title . '%')
+            ->where('projects.status', '!=', 'archived')
+            ->select(
+                'projects.id as id',
+                'projects.reference as reference',
+                'projects.title as title',
+                'projects.status as status',
+                'projects.type as type',
+                'projects.end_date as deadline'
+            )
+            ->selectRaw('COALESCE(avg(project_phases.percentage), 0) as total_percentage')
+            ->groupBy(
+                'projects.id',
+                'projects.reference',
+                'projects.title',
+                'projects.status',
+                'projects.type',
+                'projects.end_date'
+            )
+            ->latest('projects.created_at')
+            ->get();
+        return response()->json([
+            'projects' => $projects
+        ]);
     }
 
 }

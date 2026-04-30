@@ -15,19 +15,30 @@ class DashboardController extends Controller
     {
 
         $projects = DB::table('projects')
+            ->join('project_phases', 'project_phases.project_id', '=', 'projects.id')
             ->join('project_assignments', 'project_assignments.project_id', '=', 'projects.id')
-            ->join('users' , 'users.id' , '=' , 'projects.client_id')
+            ->join('users', 'users.id', '=', 'projects.client_id')
             ->where('project_assignments.user_id', auth()->id())
-            ->orderByDesc('project_assignments.created_at')
-            ->limit(5)
             ->select(
                 'projects.id',
                 'projects.title',
                 'projects.status',
-                'projects.total_progress',
                 'users.fullname as client_fullname',
-                'projects.created_at'
+                'projects.created_at',
+                'projects.reference'
             )
+            ->selectRaw('COALESCE(AVG(project_phases.percentage),0) as percentage')
+            ->groupBy(
+                'projects.id',
+                'projects.title',
+                'projects.status',
+                'users.fullname',
+                'projects.created_at',
+                'projects.reference',
+                'project_assignments.created_at'
+                )
+                ->orderByDesc('project_assignments.created_at')
+                ->limit(5)
             ->get();
 
         $assigned_projects = DB::table('project_assignments')

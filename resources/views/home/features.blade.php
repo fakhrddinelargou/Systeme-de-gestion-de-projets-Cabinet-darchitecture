@@ -117,7 +117,7 @@
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Internal Messaging</h3>
                     <p class="text-sm text-gray-600 leading-6">
-                        Communicate directly داخل المنصة between clients, workers, and managers.
+                        Communicate directly between clients, workers, and managers.
                     </p>
                 </div>
 

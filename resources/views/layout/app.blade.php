@@ -64,7 +64,7 @@
 
 
 <div id="toast"
-  class="fixed top-5 -right-100 w-72 bg-gray-900 text-white p-4 rounded-xl shadow-lg opacity-0 transition-all duration-500">
+  class="fixed top-5 -right-100 w-72 bg-gray-900 text-white p-4 rounded-xl shadow-lg opacity-0 transition-all duration-500 z-50">
 
   <h1 id="title" class="text-sm font-semibold mb-1"></h1>
   <div id="sender" class="text-xs text-gray-400"></div>
@@ -72,7 +72,10 @@
 </div>
 
 <script>
-function showToast(title, sender, message , id) {
+
+    window.user_id = @json(auth()->id());
+
+window.showToast = function (title, sender, message , id) {
   const toast = document.getElementById("toast");
 
   document.getElementById("title").innerText = title;
@@ -91,7 +94,6 @@ function showToast(title, sender, message , id) {
   }, 4000);
 }
 
-    window.user_id = @json(auth()->id());
 </script>
 
 </body>

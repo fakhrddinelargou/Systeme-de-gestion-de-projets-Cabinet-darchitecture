@@ -18,40 +18,48 @@ class UsersController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $direction = 'admin.users.index';
+public function index(Request $request)
+{
+    $direction = 'admin.users.index';
 
-        $query = DB::table('users')
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->where('users.role_id', '!=', 1)
-            ->select('users.*', 'roles.name as role_name');
+    $query = DB::table('users')
+        ->join('roles', 'users.role_id', '=', 'roles.id')
+        ->where('users.role_id', '!=', 1)
+        ->select('users.*', 'roles.name as role_name');
 
-        if ($request->filled('role') && $request->role !== 'all') {
-            $query->where('roles.name', $request->role);
-        }
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-
-            $query->where(function ($q) use ($search) {
-                $q->where('users.fullname', 'like', "%{$search}%")
-                    ->orWhere('users.email', 'like', "%{$search}%");
-            });
-        }
-
-        $users = $query->paginate(5)->withQueryString();
-
-        $total = DB::table('users')
-            ->where('role_id', '!=', 1)
-            ->count();
-
-        if ($request->ajax()) {
-            return response()->json($users);
-        }
-
-        return view('layout.app', compact('direction', 'users', 'total'));
+    if ($request->filled('role') && $request->role !== 'all') {
+        $query->where('roles.name', $request->role);
     }
+
+    
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('users.fullname', 'like', "%{$search}%")
+              ->orWhere('users.email', 'like', "%{$search}%");
+        });
+    }
+
+
+    $users = $query->paginate(5)->withQueryString();
+
+    
+    $total = DB::table('users')
+        ->where('role_id', '!=', 1)
+        ->count();
+
+
+    if ($request->ajax()) {
+        return response()->json([
+            'data' => $users->items(),
+            'html' => $users->links()->toHtml(),
+        ]);
+    }
+
+    return view('layout.app', compact('direction', 'users', 'total'));
+}
 
 
     public function store(Request $request)

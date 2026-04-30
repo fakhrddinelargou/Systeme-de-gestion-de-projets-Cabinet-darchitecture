@@ -25,7 +25,7 @@
                     <option value="all" selected>All</option>
                     <option value="pending">Pending</option>
                     <option value="in_progress">In Progress</option>
-                    <option value="complated">complated</option>
+                    <option value="completed">completed</option>
                     <option value="archived">archived</option>
                 </select>
 
@@ -186,20 +186,21 @@
 
 <script>
     const filter = document.getElementById('filter');
-    const status_dispo = ['all', 'in_progress', 'pending', 'complated', 'archived'];
+    const status_dispo = ['all', 'in_progress', 'pending', 'completed', 'archived'];
     const tbody_projects = document.getElementById('tbody_projects');
     const input_search = document.getElementById('input_search');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
 
     filter.addEventListener('change', (e) => {
         let status = e.target.value;
+        
         let checkStatus = false;
         for (let i = 0; i < status_dispo.length; i++) {
             if (status_dispo[i] == status) {
                 checkStatus = true;
             }
         }
-        console.log(checkStatus);
-
         if (checkStatus) {
             filterByStatus(status);
         }
@@ -207,29 +208,67 @@
 
     input_search.addEventListener('input', (e) => {
         let title = e.target.value;
-
         filterByTitle(title);
-
     })
 
-    async function filterByStatus(status) {
-        const url = `projects/filter/status/${status}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        displayProjects(data.projects)
-    }
+async function filterByStatus(status) {
+        console.log(status);
 
-    async function filterByTitle(title) {
+    try {
+        const url = `/projects/filter/status/${status}`;
 
-        if (title == '') {
-            filterByStatus('all')
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch projects');
         }
-        const url = `projects/search/${title}`;
-        const response = await fetch(url);
+
         const data = await response.json();
+        console.log(data);
 
-        displayProjects(data.projects)
+        displayProjects(data.projects);
 
+    } catch (e) {
+        console.log('error:', e);
+    }
+}
+
+
+
+  async function filterByTitle(title) {
+    
+  if(title.length === 0){
+    filterByStatus('all')
+    return;
+  }
+        
+            try {
+        const url = `/admin/projects/search/${title}`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch projects');
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        displayProjects(data.projects);
+
+    } catch (e) {
+        console.log('error:', e);
+    }
     }
 
 
@@ -243,14 +282,15 @@
             'archived': 'bg-slate-100 text-slate-500',
         };
 
-        if (data.length == 0) {
+        if (data?.length == 0) {
+            
             isEmpty()
             return;
         }
 
         tbody_projects.innerHTML = '';
 
-        data.forEach(el => {
+        data?.forEach(el => {
             const currentClass = statusClasses[el.status] || 'bg-slate-50 text-slate-600';
 
             tbody_projects.innerHTML += `
@@ -274,7 +314,7 @@
             <td class="px-6 py-4 w-1/4">
                 <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between text-[10px] font-bold text-slate-500">
-                        <span>${el.total_progress}%</span>
+                        <span>${Number(el.total_progress).toFixed(0) ?? 0}%</span>
                         <span>Phase villa</span>
                     </div>
                     <div class="w-full bg-slate-100 rounded-full h-1.5">
@@ -286,7 +326,7 @@
 
             <td class="px-6 py-4">
                 <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-md ${currentClass}">
-                    ${el.status.replace('_', ' ')}
+                    ${el.status}
                 </span>
             </td>
 

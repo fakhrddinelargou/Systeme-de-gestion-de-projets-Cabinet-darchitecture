@@ -124,17 +124,17 @@
                             @endphp
 
                             @forelse ($data['projects'] as $project)
+
                                 <tr class="hover:bg-slate-50/80 transition-all group">
                                     <td class="px-8 py-4">
                                         <div>
-                                            <p class="text-sm font-bold text-slate-800">{{ $project->title }}</p>
-                                            <p class="text-[11px] text-slate-400">{{ $project->description }}</p>
+                                            <p class="text-sm font-bold text-[12px] text-slate-800">{{ $project->title }}</p>
                                         </div>
                                     </td>
 
-                                    <td class="px-8 py-5 text-center">
+                                    <td class=" py-5 text-center">
                                         <span
-                                            class="px-3 py-1 text-[10px] font-black uppercase rounded-md border {{ $statusClasses[$project->status] ?? 'bg-slate-100 text-slate-500 border-slate-200' }}">
+                                            class="px-2 py-1 text-[8px] font-black uppercase rounded-md border {{ $statusClasses[$project->status] ?? 'bg-slate-100 text-slate-500 border-slate-200' }}">
                                             {{ $statusLabels[$project->status] ?? $project->status }}
                                         </span>
                                     </td>
@@ -143,7 +143,7 @@
                                         <div class="w-28 mx-auto">
                                             <div class="flex justify-between items-center mb-1">
                                                 <span
-                                                    class="text-[11px] font-bold text-slate-500">{{ $project->percentage ?? 0 }}%</span>
+                                                    class="text-[11px] font-bold text-slate-500">{{ number_format($project->percentage ,2) ?? 0 }}%</span>
                                             </div>
                                             <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                                                 <div class="h-full bg-emerald-500 rounded-full"
@@ -152,7 +152,7 @@
                                         </div>
                                     </td>
 
-                                    <td class="md:px-8 px-4 py-5 text-center md:text-sm text-[8px] font-medium text-slate-500">
+                                    <td class="md:px-5 px-4 py-5 text-center md:text-sm text-[8px] font-medium text-slate-500">
                                         {{ \Carbon\Carbon::parse($project->created_at)->format('M d, Y') }}
                                     </td>
 

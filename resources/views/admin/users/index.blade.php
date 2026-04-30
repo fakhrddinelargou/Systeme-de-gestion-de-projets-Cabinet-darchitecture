@@ -29,11 +29,11 @@
             </div>
 
             <div class="flex bg-slate-100 p-1.5 rounded-md w-full md:w-auto">
-                <button onclick="FilterByRole('all')"
+                <button onclick="filterByRoleHandler('all')"
                     class="type px-6 py-2  cursor-pointer bg-white shadow-sm text-gray-600 rounded-md  text-xs font-black uppercase tracking-wider">All</button>
-                <button onclick="FilterByRole('architecte')"
+                <button onclick="filterByRoleHandler('architecte')"
                     class="type px-6 py-2 text-slate-500 cursor-pointer text-xs font-black uppercase tracking-wider hover:text-slate-800 transition-all">Architects</button>
-                <button onclick="FilterByRole('client')"
+                <button onclick="filterByRoleHandler('client')"
                     class="type px-6 py-2 text-slate-500  cursor-pointer  text-xs font-black uppercase tracking-wider hover:text-slate-800 transition-all">Clients</button>
             </div>
 
@@ -69,9 +69,9 @@
                 </table>
             </div>
 
-<div class="items px-8 py-5 border-t border-slate-100 text-xs font-bold text-slate-400">
-    {{ $users->links() }}
-</div>
+            <div class="items px-8 py-5 border-t border-slate-100 text-xs font-bold text-slate-400">
+                {{ $users->links() }}
+            </div>
 
         </div>
     </div>
@@ -80,10 +80,7 @@
 
 @include('components.users.block-user')
 
-
-
 <script>
-    // 1. Global Variables & Selectors
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const input_search = document.getElementById('input_search');
     const type = document.querySelectorAll('.type');
@@ -93,10 +90,8 @@
     const storagePath = "{{ asset('storage') }}/";
     let userIdToBlock = null;
 
-    // 2. Initialization
     showUSers(users.data);
 
-    // 3. Event Listeners
     input_search.addEventListener('input', (e) => {
         const query = e.target.value;
         if (query.trim().length !== 0) {
@@ -117,9 +112,6 @@
         });
     });
 
-
-
-
     async function filterByRole(roleName) {
         const url = `/admin/users?role=${roleName}`;
         try {
@@ -129,36 +121,36 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
+
             const data = await response.json();
             showUSers(data.data);
+            document.querySelector('.items').innerHTML = data.html;
+
         } catch (error) {
             console.error("Filter Error:", error);
         }
     }
 
-async function getName(query) {
-    console.log(query);
+    async function getName(query) {
+        try {
+            const response = await fetch(`/admin/users?search=${query}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
 
-    try {
-        const response = await fetch(`/admin/users?search=${query}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        });
+            if (!response.ok) throw new Error(response.status);
 
-        if (!response.ok) throw new Error(response.status);
+            const data = await response.json();
 
-        const data = await response.json();
+            showUSers(data.data);
+            document.querySelector('.items').innerHTML = data.html;
 
-        showUSers(data.data); // ✅ صح
-
-        document.querySelector('.items').innerHTML = data.html; // مهم باش pagination تتبدل
-
-    } catch (error) {
-        console.error("Search Error:", error);
+        } catch (error) {
+            console.error("Search Error:", error);
+        }
     }
-}
 
     function showUSers(usersList) {
         tbody.innerHTML = '';
@@ -216,13 +208,9 @@ async function getName(query) {
                     </div>
                 </td>
             </tr>`;
-
-            console.log(user);
-
         });
     }
 
-    // 5. Modal & Actions
     function openConfirmModal(id) {
         userIdToBlock = id;
         const modal = document.getElementById('confirm-modal');
@@ -236,8 +224,9 @@ async function getName(query) {
         document.body.style.overflow = 'auto';
     }
 
-    async function handleConfirm() {        
+    async function handleConfirm() {
         if (!userIdToBlock) return;
+
         try {
             const response = await fetch(`/admin/users/${userIdToBlock}/block`, {
                 method: 'PUT',
@@ -247,12 +236,14 @@ async function getName(query) {
                     'Accept': 'application/json'
                 }
             });
+
             const data = await response.json();
-            
             showAlert(data.message);
+
         } catch (error) {
             console.error("Error:", error);
         }
+
         closeModal();
     }
 
@@ -269,7 +260,9 @@ async function getName(query) {
                     <span class="material-symbols-outlined text-lg">close</span>
                 </button>
             </div>`;
+
         document.body.insertAdjacentHTML('afterbegin', alertHTML);
+
         setTimeout(() => {
             const alert = document.getElementById('alert');
             if (alert) alert.remove();
@@ -278,21 +271,24 @@ async function getName(query) {
 
     function cenvertTime(time) {
         return new Date(time).toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: 'numeric'
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
         });
     }
 
-    function FilterByRole(role) {
+    function filterByRoleHandler(role) {
         const validRoles = ['all', 'client', 'architecte'];
+
         if (validRoles.includes(role)) {
             role === 'all' ? showUSers(users.data) : filterByRole(role);
         }
     }
 
     function openEditModal(userId) {
-
         const userData = users.data.find(u => u.id === userId);
         const defaultAvatar = "/assets/images/gust.jpg";
+
         if (!userData) {
             console.error("User Not found!");
             return;
@@ -347,25 +343,23 @@ async function getName(query) {
         </div>
     </div>
          `;
-        document.body.insertAdjacentHTML('afterbegin', cardUser)
-    }
 
+        document.body.insertAdjacentHTML('afterbegin', cardUser);
+    }
 
     function closeEditModal() {
         const modal = document.getElementById("edit-user-modal");
+
         if (modal) {
             modal.remove();
         }
     }
 
     async function submitRole(id) {
-        console.log(csrfToken);
-
         const role = document.getElementById('edit-role').value;
-        console.log(role);
-
         const btnRole = document.getElementById('btnRole');
         const url = `/admin/update/users/${id}?role=${role}`;
+
         const options = {
             method: 'PUT',
             headers: {
@@ -373,7 +367,6 @@ async function getName(query) {
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': csrfToken,
             },
-
         };
 
         if (btnRole) {
@@ -385,9 +378,10 @@ async function getName(query) {
         try {
             const response = await fetch(url, options);
             const data = await response.json();
-            console.log(data.message);
+
             closeEditModal();
             showAlert(data.message);
+
         } catch (err) {
             console.log(err);
         }

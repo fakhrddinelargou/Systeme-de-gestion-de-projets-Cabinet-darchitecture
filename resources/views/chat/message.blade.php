@@ -1,4 +1,4 @@
-<main class="w-full h-auto min-h-screen lg:w-[82%] ml-auto bg-[#F9FBFC] flex flex-col">
+<main class="w-full h-auto min-h-screen lg:w-[82%] ml-auto bg-[#F9FBFC] flex flex-col z-500">
     <header class="h-17.5 bg-white border-b border-slate-100 flex items-center justify-between px-8 sticky top-0 z-10">
         <div>
             <h1 class="text-xl font-bold text-slate-800">Messages</h1>
@@ -41,9 +41,7 @@
                                                     {{ $cont->last_message_time ?? '' }}
                                                 </span>
                                             </div>
-                                            <p class="text-xs text-slate-400 truncate font-medium">
-                                                {{ $cont->last_message_body ?? 'No messages yet' }}
-                                            </p>
+                                  
                                         </div>
                                     </a>
                 @endforeach

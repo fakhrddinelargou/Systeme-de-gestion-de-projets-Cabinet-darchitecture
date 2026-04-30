@@ -38,7 +38,7 @@ class DashboardController extends Controller
             ->where('users.role_id', '!=', 1)
             ->where('users.is_active', true)
             ->latest('users.created_at')
-            ->take(10)
+            ->take(5)
             ->get();
 
         $data = null;

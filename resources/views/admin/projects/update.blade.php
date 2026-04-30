@@ -130,8 +130,8 @@
 
                         <option value="">Select type</option>
 
-                        @foreach($types as $value => $label)
-                            <option value="{{ $value }}" {{ old('type', $project->type ?? '') == $value ? 'selected' : '' }}>
+                        @foreach($types as  $value => $label)
+                            <option value="{{ $label }}" {{ old('type', $project->type ?? '') == $value ? 'selected' : '' }}>
                                 {{ $label }}
                             </option>
                         @endforeach
@@ -181,6 +181,7 @@
                             <option value="pending" {{ $project->status == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="in_progress" {{ $project->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                             <option value="completed" {{ $project->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="archived" {{ $project->status == 'archived' ? 'selected' : '' }}>Archived</option>
                         </select>
                     </div>
                 </div>

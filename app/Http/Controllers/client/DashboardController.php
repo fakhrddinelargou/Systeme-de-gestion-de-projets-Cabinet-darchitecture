@@ -5,6 +5,7 @@ namespace App\Http\Controllers\client;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -35,9 +36,17 @@ class DashboardController extends Controller
             ->where('status', 'completed')
             ->count();
 
-        $projects = Project::where('client_id', auth()->id())
-            ->latest('created_at')
+        $projects = DB::table('projects')
+            ->leftjoin('project_phases', 'project_phases.project_id', '=', 'projects.id')
+            ->where('projects.status', '!=', 'archived')
+            ->where('projects.client_id', auth()->id())
+            ->select('projects.title', 'projects.id', 'projects.end_date', 'projects.status' , 'projects.created_at')
+            ->selectRaw('COALESCE(AVG(project_phases.percentage),0) as percentage')
+            ->groupBy('projects.id', 'projects.status', 'projects.title', 'projects.end_date','projects.created_at')
+            ->latest('projects.created_at')
             ->get();
+
+        
 
         $notifications = auth()->user()->unreadNotifications;
 

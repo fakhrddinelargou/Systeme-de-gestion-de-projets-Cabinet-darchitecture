@@ -21,6 +21,7 @@ class ProjectController extends Controller
         $projects = DB::table('projects')
             ->join('users', 'users.id', '=', 'projects.client_id')
             ->leftjoin('project_phases', 'projects.id', '=', 'project_phases.project_id')
+            ->where('projects.status', '!=', 'archived')
             ->select(
                 'users.avatar as avatar',
                 'projects.id as id',
@@ -120,7 +121,7 @@ class ProjectController extends Controller
 
     public function filterByStatus(string $status)
     {
-        $status_dispo = ['all', 'in_progress', 'pending', 'complated', 'archived'];
+        $status_dispo = ['all', 'in_progress', 'pending', 'completed', 'archived'];
         $projects = null;
         if (!in_array($status, $status_dispo)) {
             return response()->json([
@@ -158,11 +159,28 @@ class ProjectController extends Controller
 
         $projects = DB::table('projects')
             ->join('users', 'users.id', '=', 'projects.client_id')
+            ->join('project_phases', 'project_phases.project_id', '=', 'projects.id')
             ->where('projects.title', 'like', '%' . $title . '%')
-            ->select('users.avatar as avatar', 'projects.id as id', 'users.fullname as client_name', 'projects.reference as reference', 'projects.total_progress as total_progress', 'projects.title as title', 'projects.status as status')
+            ->where('projects.status', '!=', 'archived')
+            ->select(
+                'users.avatar as avatar',
+                'projects.id as id',
+                'users.fullname as client_name',
+                'projects.reference as reference',
+                'projects.title as title',
+                'projects.status as status'
+            )
+            ->selectRaw('COALESCE(avg(project_phases.percentage), 0) as total_percentage')
+            ->groupBy(
+                'users.fullname',
+                'users.avatar',
+                'projects.id',
+                'projects.reference',
+                'projects.title',
+                'projects.status'
+            )
             ->latest('projects.created_at')
             ->get();
-
         return response()->json([
             'projects' => $projects
         ]);
@@ -200,14 +218,15 @@ class ProjectController extends Controller
 
         $project = Project::find($id);
 
-
-
         if (!$project) {
             return back()->with('error', 'Project not found');
         }
 
-
         $project->update($validate);
+        if ($request->status == 'completed') {
+            $client = User::where('id', $project->client_id)->first();
+            $client->notify(new SocialNotifications('project', 'Project has been completed', auth()->user()->fullname, $project->id));
+        }
         $users = User::join('project_assignments', 'project_assignments.user_id', '=', 'users.id')
             ->where('project_assignments.project_id', $project->id)
             ->where('project_assignments.user_id', '!=', auth()->id())
@@ -230,33 +249,33 @@ class ProjectController extends Controller
     /**
      * Archive project
      */
-    public function archive(Project $project)
-    {
-        if ($project->status !== 'archived') {
-            $project->update(['status' => 'archived']);
-            return back()->with('success', 'Project archived successfully!');
-        }
-        return back()->with('info', 'this project already archived.');
-    }
+    // public function archive(Project $project)
+    // {
+    //     if ($project->status !== 'archived') {
+    //         $project->update(['status' => 'archived']);
+    //         return back()->with('success', 'Project archived successfully!');
+    //     }
+    //     return back()->with('info', 'this project already archived.');
+    // }
 
-    /**
-     * Unarchive project
-     */
-    public function unArchive(Project $project, string $status)
-    {
-        if ($project->status !== 'archived') {
-            return back()->with('error', 'this project is not  archived!');
-        }
+    // /**
+    //  * Unarchive project
+    //  */
+    // public function unArchive(Project $project, string $status)
+    // {
+    //     if ($project->status !== 'archived') {
+    //         return back()->with('error', 'this project is not  archived!');
+    //     }
 
-        $allowedStatus = ['pending', 'in_progress', 'completed'];
+    //     $allowedStatus = ['pending', 'in_progress', 'completed'];
 
-        if (in_array($status, $allowedStatus)) {
-            $project->update(['status' => $status]);
-            return back()->with('success', 'Project restored successfully');
-        }
+    //     if (in_array($status, $allowedStatus)) {
+    //         $project->update(['status' => $status]);
+    //         return back()->with('success', 'Project restored successfully');
+    //     }
 
-        return back()->with('error', 'Status Error!');
-    }
+    //     return back()->with('error', 'Status Error!');
+    // }
 
     public function acceptStatus(string $id)
     {

@@ -39,8 +39,7 @@ class AuthController extends Controller
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
         }
-        // dd($request->file('avatar'), $request->avatar);
-        // dd($validatedData);
+    
         $user = User::create([
             'fullname' => $validatedData['fullname'],
             'role_id' => 3,
@@ -61,7 +60,7 @@ class AuthController extends Controller
 
         }
 
-        return back()->with('error', 'Invalid data');
+        return redirect()->route('login.page')->with('error', 'Invalid data');
     }
     public function login(LoginRequest $request)
     {
